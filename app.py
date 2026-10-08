@@ -97,11 +97,13 @@ def init_state():
     ss.setdefault("upload_sig", {})  # kind -> signature of the last processed upload
     ss.setdefault("bookings", [])
     ss.setdefault("send_results", None)
+    ss.setdefault("uploader_nonce", 0)  # bumped to reset the file uploaders
 
 
 def load_sample_into_state():
     try:
-        sample = D.load_sample()
+        with st.spinner("Loading sample data..."):
+            sample = D.load_sample()
     except Exception as exc:
         st.error(f"Couldn't load sample data: {exc}")
         return
@@ -110,6 +112,7 @@ def load_sample_into_state():
         st.session_state.notes[kind] = notes
         st.session_state.source[kind] = "sample data"
     st.session_state.upload_sig = {}
+    st.session_state.uploader_nonce += 1   # clear any previously uploaded files
     st.session_state.bookings = []
     st.session_state.send_results = None
 
@@ -129,6 +132,14 @@ def handle_upload(kind: str, file):
     except Exception as exc:
         st.session_state.notes[kind] = [f"ERROR: Unexpected problem reading {file.name}: {exc}"]
         return
+    # Don't mix the judge's own files with leftover sample tables.
+    leftovers = [k for k, src in st.session_state.source.items() if src == "sample data" and k != kind]
+    for k in leftovers:
+        for store in ("data", "notes", "source"):
+            st.session_state[store].pop(k, None)
+    if leftovers:
+        st.session_state.bookings = []
+        st.toast("Sample data cleared - now using your uploaded files.", icon="📁")
     st.session_state.data[kind] = df
     st.session_state.notes[kind] = notes
     st.session_state.source[kind] = file.name
@@ -164,7 +175,7 @@ with st.sidebar:
         load_sample_into_state()
 
     for kind, (label, cols) in FILE_LABELS.items():
-        f = st.file_uploader(label, type=["csv", "xlsx", "xls"], key=f"up_{kind}",
+        f = st.file_uploader(label, type=["csv", "xlsx", "xls"], key=f"up_{kind}_{ss.uploader_nonce}",
                              help=f"Columns: {cols}. Headers are case-insensitive; common aliases like 'Roll No' work.")
         handle_upload(kind, f)
         notes = ss.notes.get(kind, [])
@@ -181,6 +192,7 @@ with st.sidebar:
         for k in ("data", "notes", "source", "upload_sig", "bookings"):
             ss[k] = {} if k != "bookings" else []
         ss.send_results = None
+        ss.uploader_nonce += 1
         st.rerun()
 
     st.divider()

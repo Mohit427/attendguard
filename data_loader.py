@@ -104,9 +104,15 @@ def read_table(file, filename: str | None = None) -> pd.DataFrame:
         raise DataError(f"Couldn't read the file ({exc}).") from exc
     if not data:
         raise DataError("The file is empty.")
-    try:
-        if name.endswith((".xlsx", ".xls", ".xlsm")):
+    if name.endswith((".xlsx", ".xls", ".xlsm")):
+        try:
             return pd.read_excel(io.BytesIO(data), dtype=str)
+        except ImportError as exc:
+            raise DataError(f"Excel support is missing on the server ({exc}). Please upload a CSV.") from exc
+        except Exception as exc:
+            raise DataError("Couldn't open this Excel file - it may be corrupted, password-protected "
+                            "or not really .xlsx. Try saving it again or export it as CSV.") from exc
+    try:
         for enc in ("utf-8-sig", "latin-1"):
             try:
                 return pd.read_csv(io.BytesIO(data), dtype=str, encoding=enc,
@@ -114,8 +120,8 @@ def read_table(file, filename: str | None = None) -> pd.DataFrame:
             except UnicodeDecodeError:
                 continue
     except Exception as exc:
-        raise DataError(f"Couldn't parse the file as {'Excel' if name.endswith('x') else 'CSV'} "
-                        f"({exc}). Please upload a .csv or .xlsx file.") from exc
+        raise DataError(f"Couldn't parse the file as CSV ({exc}). "
+                        f"Please upload a .csv or .xlsx file.") from exc
     raise DataError("Couldn't decode the file. Please save it as UTF-8 CSV or .xlsx.")
 
 
