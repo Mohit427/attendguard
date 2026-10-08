@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import uuid
+
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import streamlit as st
+import streamlit.components.v1 as components
 
 import data_loader as D
 import emailer as E
@@ -14,8 +17,8 @@ import logic as L
 st.set_page_config(page_title="AttendGuard", page_icon="🛡️", layout="wide",
                    initial_sidebar_state="expanded")
 
-STATUS_COLORS = {L.CRITICAL: "#dc2626", L.WARNING: "#f59e0b", L.SAFE: "#16a34a"}
-STATUS_BG = {L.CRITICAL: "#fee2e2", L.WARNING: "#fef3c7", L.SAFE: "#dcfce7"}
+STATUS_COLORS = {L.CRITICAL: "#ef4444", L.WARNING: "#f59e0b", L.SAFE: "#10b981"}
+STATUS_BG = {L.CRITICAL: "rgba(239,68,68,.14)", L.WARNING: "rgba(245,158,11,.16)", L.SAFE: "rgba(16,185,129,.14)"}
 TREND_ICON = {L.FALLING: "↘ Falling", L.STABLE: "→ Stable", L.IMPROVING: "↗ Improving", L.NO_MARKS: "– No marks"}
 PLOT_CFG = {"displayModeBar": False}
 FILE_LABELS = {
@@ -25,30 +28,138 @@ FILE_LABELS = {
     "timetable": ("Timetable (optional)", "teacher_name, day, time_slot, status (free/busy)"),
 }
 
+LOGO_SVG = """<svg width="{s}" height="{s}" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+<defs><linearGradient id="agg{k}" x1="6" y1="4" x2="42" y2="44" gradientUnits="userSpaceOnUse">
+<stop stop-color="#c7d2fe"/><stop offset=".55" stop-color="#ffffff"/><stop offset="1" stop-color="#a5f3fc"/></linearGradient></defs>
+<path d="M24 3.5 40.5 9.6v12.6c0 10.4-6.9 18.9-16.5 22.3C14.4 41.1 7.5 32.6 7.5 22.2V9.6L24 3.5Z" fill="url(#agg{k})"/>
+<path d="m16.5 24 5.2 5.2 10.3-10.6" stroke="#4f46e5" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>"""
+
+
+def logo(size: int = 34, key: str = "a") -> str:
+    return LOGO_SVG.format(s=size, k=key)
+
+
 st.markdown("""
 <style>
-.block-container {padding-top: 2rem; padding-bottom: 3rem; max-width: 1400px;}
-.ag-header {display:flex; align-items:center; gap:14px; margin-bottom: .25rem;}
-.ag-logo {font-size: 2.1rem; line-height: 1;}
-.ag-title {font-size: 1.9rem; font-weight: 700; color:#0f172a; margin:0;}
-.ag-sub {color:#64748b; margin: 0 0 1.2rem 0; font-size: .98rem;}
-.ag-card {background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:14px 18px;
-          box-shadow: 0 1px 2px rgba(15,23,42,.04); height: 100%;}
-.ag-card .lbl {color:#64748b; font-size:.82rem; font-weight:600; text-transform:uppercase; letter-spacing:.04em;}
-.ag-card .val {font-size:1.9rem; font-weight:700; color:#0f172a; margin-top:2px;}
-.ag-card .hint {color:#94a3b8; font-size:.78rem;}
-.ag-card.critical {border-left: 5px solid #dc2626;}
-.ag-card.warning {border-left: 5px solid #f59e0b;}
-.ag-card.safe {border-left: 5px solid #16a34a;}
-.ag-card.neutral {border-left: 5px solid #2563eb;}
-.ag-badge {display:inline-block; padding:2px 10px; border-radius:999px; font-size:.78rem; font-weight:700;
-           letter-spacing:.03em;}
-.ag-banner {padding:10px 14px; border-radius:10px; margin-bottom: 12px; font-weight:500;}
-.ag-banner.test {background:#eff6ff; border:1px solid #bfdbfe; color:#1e3a8a;}
-.ag-banner.live {background:#fef2f2; border:1px solid #fecaca; color:#991b1b;}
-.ag-empty {text-align:center; padding: 2.5rem 1rem; border:1px dashed #cbd5e1; border-radius:14px;
-           background:#f8fafc; color:#475569;}
-div[data-testid="stTabs"] button p {font-size: 1rem; font-weight: 600;}
+.block-container {padding-top: 1.4rem; padding-bottom: 4rem; max-width: 1380px;}
+[data-testid="stHeader"] {background: transparent;}
+
+/* hero */
+.ag-hero {position:relative; overflow:hidden; border-radius:22px; padding:26px 30px 22px; margin:0 0 22px;
+  color:#fff; background: linear-gradient(118deg,#4338ca 0%,#6d28d9 48%,#0e7490 100%);
+  box-shadow: 0 18px 40px -22px rgba(79,70,229,.75);}
+.ag-hero::before {content:""; position:absolute; right:-80px; top:-90px; width:320px; height:320px; border-radius:50%;
+  background: radial-gradient(circle, rgba(255,255,255,.25), rgba(255,255,255,0) 68%);}
+.ag-hero::after {content:""; position:absolute; left:38%; bottom:-140px; width:300px; height:300px; border-radius:50%;
+  background: radial-gradient(circle, rgba(103,232,249,.28), rgba(103,232,249,0) 70%);}
+.ag-hero-row {position:relative; z-index:1; display:flex; align-items:center; gap:18px;}
+.ag-logo {width:62px; height:62px; flex:0 0 62px; border-radius:18px; display:flex; align-items:center;
+  justify-content:center; background: rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.3);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.25);}
+.ag-title {font-size:2.05rem; font-weight:800; letter-spacing:-.025em; line-height:1.05; color:#fff;}
+.ag-tag {margin-top:6px; font-size:1rem; color:rgba(255,255,255,.88);}
+.ag-chips {position:relative; z-index:1; display:flex; flex-wrap:wrap; gap:8px; margin-top:18px;}
+.ag-chip {font-size:.8rem; font-weight:600; padding:5px 12px; border-radius:999px; color:#fff;
+  background: rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.26);}
+
+/* KPI cards */
+.ag-kpi {position:relative; height:100%; border-radius:18px; padding:16px 18px 14px; border:1px solid var(--bd);
+  background: linear-gradient(150deg, var(--bg1), var(--bg2)); transition: transform .18s ease, box-shadow .18s ease;}
+.ag-kpi:hover {transform: translateY(-3px); box-shadow: 0 14px 28px -18px var(--c);}
+.ag-kpi .top {display:flex; align-items:center; justify-content:space-between; gap:8px;}
+.ag-kpi .lbl {font-size:.74rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; opacity:.72;}
+.ag-kpi .ico {width:34px; height:34px; border-radius:11px; display:flex; align-items:center; justify-content:center;
+  background: var(--c); color:#fff; font-size:1rem; box-shadow: 0 6px 14px -6px var(--c);}
+.ag-kpi .val {font-size:2.15rem; font-weight:800; letter-spacing:-.03em; line-height:1.1; margin-top:8px; color:var(--c);}
+.ag-kpi .hint {font-size:.8rem; opacity:.66; margin-top:2px;}
+.ag-kpi .bar {height:6px; border-radius:99px; margin-top:12px; background: rgba(127,127,127,.18); overflow:hidden;}
+.ag-kpi .bar > span {display:block; height:100%; border-radius:99px; background: var(--c);}
+
+/* recovery plan items */
+.ag-plan {display:flex; gap:12px; align-items:flex-start; padding:12px 14px; border-radius:14px; margin-bottom:10px;
+  border:1px solid var(--bd); border-left:4px solid var(--c); background: linear-gradient(120deg, var(--bg1), rgba(127,127,127,.02));}
+.ag-plan .i {font-size:1.15rem; line-height:1.4;}
+.ag-plan .sj {font-weight:700; display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+.ag-plan .tg {font-size:.7rem; font-weight:800; letter-spacing:.04em; padding:2px 8px; border-radius:999px;
+  color:var(--c); background: var(--bg1); border:1px solid var(--bd); text-transform:uppercase;}
+.ag-plan .tx {font-size:.9rem; opacity:.8; margin-top:2px;}
+.ag-kpi .val.sm {font-size:1.35rem; line-height:1.25;}
+
+/* section titles */
+.ag-sec {display:flex; align-items:baseline; gap:10px; margin: 4px 0 10px;}
+.ag-sec .pip {width:6px; height:20px; border-radius:6px; align-self:center; background: linear-gradient(180deg,#6366f1,#06b6d4);}
+.ag-sec .t {font-size:1.06rem; font-weight:700; letter-spacing:-.01em;}
+.ag-sec .s {font-size:.84rem; opacity:.6;}
+
+/* badges, banners */
+.ag-badge {display:inline-block; padding:3px 11px; border-radius:999px; font-size:.74rem; font-weight:800;
+  letter-spacing:.05em; vertical-align:middle;}
+.ag-banner {display:flex; gap:12px; align-items:center; padding:12px 16px; border-radius:14px; margin-bottom:16px;
+  font-size:.95rem; border:1px solid;}
+.ag-banner .ic {font-size:1.25rem;}
+.ag-banner.test {background: rgba(99,102,241,.10); border-color: rgba(99,102,241,.38);}
+.ag-banner.live {background: rgba(239,68,68,.10); border-color: rgba(239,68,68,.40);}
+
+/* profile header (student view) */
+.ag-profile {display:flex; align-items:center; gap:16px; padding:16px 18px; border-radius:18px; margin:6px 0 16px;
+  border:1px solid rgba(127,127,127,.2); background: linear-gradient(120deg, rgba(99,102,241,.12), rgba(6,182,212,.06));}
+.ag-avatar {width:56px; height:56px; flex:0 0 56px; border-radius:50%; display:flex; align-items:center;
+  justify-content:center; font-weight:800; font-size:1.15rem; color:#fff;
+  background: linear-gradient(135deg,#6366f1,#8b5cf6 55%,#06b6d4);}
+.ag-profile .nm {font-size:1.35rem; font-weight:800; letter-spacing:-.02em;}
+.ag-profile .meta {font-size:.88rem; opacity:.65; margin-top:2px;}
+
+/* welcome / empty states */
+.ag-welcome {text-align:center; padding: 6px 8px 0;}
+.ag-welcome .h {font-size:1.6rem; font-weight:800; letter-spacing:-.02em;}
+.ag-welcome .p {opacity:.7; margin: 6px auto 0; max-width: 660px;}
+.ag-steps {display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin: 24px 0 26px;}
+.ag-step {text-align:left; padding:20px; border-radius:18px; border:1px solid var(--bd);
+  background: linear-gradient(160deg, var(--bg1), rgba(127,127,127,.02));}
+.ag-step .n {width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center;
+  font-size:1.15rem; color:#fff; background: var(--c); margin-bottom:12px; box-shadow: 0 8px 18px -8px var(--c);}
+.ag-step .t {font-weight:700; font-size:1.02rem;}
+.ag-step .d {opacity:.68; font-size:.9rem; margin-top:4px;}
+@media (max-width: 900px) {.ag-steps {grid-template-columns: 1fr;}}
+.ag-empty {text-align:center; padding: 2.2rem 1rem; border:1.5px dashed rgba(127,127,127,.35); border-radius:18px;
+  background: rgba(127,127,127,.04);}
+.ag-empty .h {font-size:1.15rem; font-weight:700; margin-bottom:.35rem;}
+.ag-empty .b {opacity:.72;}
+
+/* sidebar */
+.ag-brand {display:flex; align-items:center; gap:12px; padding: 0 2px 6px;}
+.ag-brand .mk {width:44px; height:44px; flex:0 0 44px; border-radius:13px; display:flex; align-items:center;
+  justify-content:center; background: linear-gradient(135deg,#4f46e5,#7c3aed 60%,#0891b2);
+  box-shadow: 0 8px 18px -8px rgba(79,70,229,.8);}
+.ag-brand .nm {font-weight:800; font-size:1.2rem; letter-spacing:-.02em; line-height:1.1;}
+.ag-brand .sb {font-size:.78rem; opacity:.6;}
+.ag-side-h {font-size:.72rem; font-weight:800; letter-spacing:.09em; text-transform:uppercase; opacity:.55;
+  margin: 14px 0 4px;}
+.ag-file-ok {font-size:.8rem; padding:6px 10px; border-radius:10px; margin:-4px 0 12px;
+  background: rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.3);}
+.ag-file-ok .note {display:block; opacity:.72; margin-top:2px;}
+
+/* tabs as a pill bar */
+div[data-testid="stTabs"] [role="tablist"] {gap:6px; padding:6px; border-radius:16px; border-bottom:0;
+  background: rgba(127,127,127,.08); border:1px solid rgba(127,127,127,.16); width:fit-content; max-width:100%;}
+div[data-testid="stTabs"] [data-testid="stTab"] {height:44px; padding:0 20px; border-radius:11px; display:flex;
+  align-items:center; background:transparent; transition: background .15s ease;}
+div[data-testid="stTabs"] [data-testid="stTab"]:hover {background: rgba(127,127,127,.12);}
+div[data-testid="stTabs"] [data-testid="stTab"] p {font-size:.98rem; font-weight:700; margin:0;}
+div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] {
+  background: linear-gradient(118deg,#4f46e5,#7c3aed); box-shadow: 0 8px 18px -10px rgba(79,70,229,.9);}
+div[data-testid="stTabs"] [data-testid="stTab"][aria-selected="true"] p {color:#fff !important;}
+div[data-testid="stTabs"] .react-aria-SelectionIndicator {display:none;}
+div[data-testid="stTabs"] [role="tabpanel"] {padding-top: 18px;}
+
+/* buttons */
+button[data-testid="stBaseButton-primary"] {background: linear-gradient(118deg,#4f46e5,#7c3aed) !important;
+  border:0 !important; color:#fff !important; font-weight:700; box-shadow: 0 8px 18px -10px rgba(79,70,229,.95);
+  transition: transform .15s ease, filter .15s ease;}
+button[data-testid="stBaseButton-primary"]:hover {filter: brightness(1.1); transform: translateY(-1px);}
+button[data-testid="stBaseButton-primary"]:disabled {filter: grayscale(.6) opacity(.55); transform:none;}
+button[data-testid="stBaseButton-secondary"] {font-weight:600;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -67,15 +178,53 @@ def badge(status: str) -> str:
             f'color:{STATUS_COLORS.get(status, "#334155")}">{status}</span>')
 
 
+INDIGO, VIOLET, CYAN = "#6366f1", "#8b5cf6", "#06b6d4"
+
+
+def tint(hex_color: str, alpha: float) -> str:
+    h = hex_color.lstrip("#")
+    r, g, b = (int(h[k:k + 2], 16) for k in (0, 2, 4))
+    return f"rgba({r},{g},{b},{alpha})"
+
+
+def kpi_card(label: str, value, hint: str, icon: str, color: str, pct: float | None = None) -> str:
+    bar = (f'<div class="bar"><span style="width:{max(0.0, min(100.0, float(pct))):.0f}%"></span></div>'
+           if pct is not None else "")
+    return (f'<div class="ag-kpi" style="--c:{color};--bg1:{tint(color, .16)};--bg2:{tint(color, .03)};'
+            f'--bd:{tint(color, .30)}"><div class="top"><div class="lbl">{label}</div>'
+            f'<div class="ico">{icon}</div></div><div class="val{" sm" if len(str(value)) > 10 else ""}">{value}</div>'
+            f'<div class="hint">{hint}</div>{bar}</div>')
+
+
 def card(label: str, value, hint: str = "", kind: str = "neutral") -> str:
-    return (f'<div class="ag-card {kind}"><div class="lbl">{label}</div>'
-            f'<div class="val">{value}</div><div class="hint">{hint}</div></div>')
+    color = {"critical": STATUS_COLORS[L.CRITICAL], "warning": STATUS_COLORS[L.WARNING],
+             "safe": STATUS_COLORS[L.SAFE]}.get(kind, INDIGO)
+    return kpi_card(label, value, hint, "", color).replace('<div class="ico"></div>', "")
+
+
+def chart_layout(height: int, ytitle, legend: bool = True) -> dict:
+    """Shared Plotly look: transparent, rounded bars, soft grid - follows the light/dark theme."""
+    return dict(
+        height=height, margin=dict(l=8, r=16, t=8 if not legend else 34, b=8),
+        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,0,0,0)",
+        font=dict(family="Plus Jakarta Sans, sans-serif", size=13),
+        barcornerradius=7, bargap=0.38, xaxis_title=None, yaxis_title=ytitle,
+        xaxis=dict(showgrid=False), yaxis=dict(gridcolor="rgba(127,127,127,.18)", zeroline=False),
+        showlegend=legend, legend_title_text="",
+        legend=dict(orientation="h", y=1.02, yanchor="bottom", x=0, xanchor="left"),
+        hoverlabel=dict(font_family="Plus Jakarta Sans, sans-serif"),
+    )
+
+
+def section(title: str, sub: str = ""):
+    st.markdown(f'<div class="ag-sec"><span class="pip"></span><span class="t">{title}</span>'
+                f'<span class="s">{sub}</span></div>', unsafe_allow_html=True)
 
 
 def style_status(df: pd.DataFrame, col: str = "Status"):
     def f(v):
         c = STATUS_COLORS.get(v)
-        return f"background-color:{STATUS_BG[v]};color:{c};font-weight:700" if c else ""
+        return f"background-color:{STATUS_BG[v]};color:{c};font-weight:800" if c else ""
     return df.style.map(f, subset=[col])
 
 
@@ -85,8 +234,8 @@ def student_needed(n) -> str:
 
 
 def empty_state(title: str, body: str):
-    st.markdown(f'<div class="ag-empty"><h4 style="margin:0 0 .4rem 0">{title}</h4>'
-                f'<div>{body}</div></div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="ag-empty"><div class="h">{title}</div>'
+                f'<div class="b">{body}</div></div>', unsafe_allow_html=True)
 
 
 def init_state():
@@ -162,14 +311,79 @@ def marks_pct_table(marks: pd.DataFrame | None) -> pd.DataFrame:
     return m.sort_values(["date", "_order"], na_position="first")
 
 
+# ---------------------------------------------------------------- theme switch
+
+@st.cache_resource
+def _theme_stash() -> dict:
+    """Server-side hand-off so loaded data survives the page reload a theme switch needs."""
+    return {}
+
+
+STASH_KEYS = ("data", "notes", "source", "bookings", "send_results", "test_address")
+
+
+def restore_after_theme_switch():
+    tok = st.query_params.get("restore")
+    if not tok or st.session_state.get("_restored") == tok:
+        return
+    saved = _theme_stash().pop(tok, None)
+    if saved:
+        for k, v in saved.items():
+            st.session_state[k] = v
+    st.session_state._restored = tok
+    try:
+        del st.query_params["restore"]
+    except Exception:
+        pass
+
+
+def theme_is_dark() -> bool:
+    q = st.query_params.get("theme")
+    if q in ("dark", "light"):
+        return q == "dark"
+    try:
+        return st.context.theme.type == "dark"
+    except Exception:
+        return False
+
+
+def _on_theme_toggle():
+    st.session_state._theme_request = "Dark" if st.session_state.dark_mode else "Light"
+
+
+def apply_theme_request():
+    """Persist the choice where Streamlit's frontend reads it, then reload with data handed over."""
+    mode = st.session_state.pop("_theme_request", None)
+    if not mode:
+        return
+    tok = uuid.uuid4().hex
+    _theme_stash()[tok] = {k: st.session_state[k] for k in STASH_KEYS if k in st.session_state}
+    components.html(f"""<script>
+      const p = window.parent;
+      try {{ p.localStorage.setItem("stActiveTheme-" + p.location.pathname + "-v2", JSON.stringify("{mode}")); }} catch (e) {{}}
+      const u = new URL(p.location.href);
+      u.searchParams.set("theme", "{mode.lower()}");
+      u.searchParams.set("restore", "{tok}");
+      // Run the navigation in the parent's own JS realm - the sandboxed iframe itself may not navigate the page.
+      p.setTimeout(new p.Function("url", "window.location.replace(url)"), 50, u.toString());
+    </script>""", height=0)
+
+
 # ---------------------------------------------------------------- sidebar
 
 init_state()
 ss = st.session_state
+restore_after_theme_switch()
 
 with st.sidebar:
-    st.markdown("## 🛡️ AttendGuard")
-    st.caption("Upload your files or try the sample data.")
+    st.markdown(f'<div class="ag-brand"><div class="mk">{logo(28, "s")}</div><div>'
+                f'<div class="nm">AttendGuard</div><div class="sb">Early-warning for student success</div>'
+                f'</div></div>', unsafe_allow_html=True)
+    st.toggle("🌙 Dark mode", value=theme_is_dark(), key="dark_mode", on_change=_on_theme_toggle,
+              help="Switch between light and dark themes. Your loaded data is kept.")
+    apply_theme_request()
+
+    st.markdown('<div class="ag-side-h">Data</div>', unsafe_allow_html=True)
     if st.button("📂 Load sample data", width="stretch", type="primary",
                  help="Loads 40 realistic students across 3 departments and 5 subjects."):
         load_sample_into_state()
@@ -183,9 +397,9 @@ with st.sidebar:
         if errors:
             st.error(errors[0][7:])
         elif kind in ss.data:
-            st.caption(f"✅ {len(ss.data[kind])} rows from *{ss.source.get(kind, '')}*")
-            for n in notes:
-                st.caption(f"ℹ️ {n}")
+            extra = "".join(f'<span class="note">ℹ️ {n}</span>' for n in notes)
+            st.markdown(f'<div class="ag-file-ok">✅ <b>{len(ss.data[kind])}</b> rows · '
+                        f'{ss.source.get(kind, "")}{extra}</div>', unsafe_allow_html=True)
 
     if ss.data and st.button("Clear all data", width="stretch",
                              help="Forget all loaded files, bookings and send results."):
@@ -195,12 +409,12 @@ with st.sidebar:
         ss.uploader_nonce += 1
         st.rerun()
 
-    st.divider()
+    st.markdown('<div class="ag-side-h">Rules</div>', unsafe_allow_html=True)
     target = st.slider("Attendance target (%)", 50, 100, 85, 1,
                        help="SAFE ≥ target + 5 · WARNING within 5 points above target · CRITICAL below target.")
-    st.divider()
-    st.markdown("**Email settings**")
-    test_mode = st.toggle("Test mode", value=True, key="test_mode",
+
+    st.markdown('<div class="ag-side-h">Email</div>', unsafe_allow_html=True)
+    test_mode = st.toggle("🧪 Test mode", value=True, key="test_mode",
                           help="Redirects ALL outgoing emails to the test address below. "
                                "The real recipient is noted in the subject line.")
     test_address = st.text_input("Test address", value=ss.get("test_address", get_secret("SMTP_USER")),
@@ -216,21 +430,37 @@ with st.sidebar:
 
 # ---------------------------------------------------------------- header
 
-st.markdown('<div class="ag-header"><div class="ag-logo">🛡️</div>'
-            '<p class="ag-title">AttendGuard</p></div>'
-            '<p class="ag-sub">Student attendance &amp; performance early-warning system - spot at-risk '
-            'students, show them exactly how to recover, and alert the right staff.</p>',
-            unsafe_allow_html=True)
+st.markdown(
+    f'<div class="ag-hero"><div class="ag-hero-row"><div class="ag-logo">{logo(38, "h")}</div><div>'
+    f'<div class="ag-title">AttendGuard</div>'
+    f'<div class="ag-tag">Spot at-risk students early, show them exactly how to recover, '
+    f'and alert the right staff - in minutes.</div></div></div>'
+    f'<div class="ag-chips"><span class="ag-chip">📊 Attendance analytics</span>'
+    f'<span class="ag-chip">📈 Marks trends</span><span class="ag-chip">🎯 Recovery plans</span>'
+    f'<span class="ag-chip">✉️ Smart alerts</span><span class="ag-chip">📅 Appointments</span></div></div>',
+    unsafe_allow_html=True)
 
 if "attendance" not in ss.data:
-    empty_state("No attendance data yet",
-                "Upload an <b>attendance</b> file in the sidebar (CSV or Excel), or load the sample data "
-                "to explore AttendGuard with 40 realistic students.")
-    c = st.columns([2, 1, 2])[1]
+    steps = [("📁", "Upload your files", "Attendance, marks, staff and an optional timetable - CSV or Excel, "
+              "messy headers welcome.", INDIGO),
+             ("🔍", "Spot risk instantly", "Status, classes needed to recover, marks trends and a 0-100 "
+              "risk score for every student.", CYAN),
+             ("🚀", "Act in one click", "Personalised emails to students, alerts to teachers and advisers, "
+              "and meeting bookings.", VIOLET)]
+    cards_html = "".join(
+        f'<div class="ag-step" style="--c:{c};--bg1:{tint(c, .10)};--bd:{tint(c, .28)}">'
+        f'<div class="n">{i}</div><div class="t">{t}</div><div class="d">{d}</div></div>'
+        for i, t, d, c in steps)
+    st.markdown('<div class="ag-welcome"><div class="h">Welcome! Let\'s find who needs help.</div>'
+                '<div class="p">Upload an <b>attendance</b> file in the sidebar, or load the sample data to '
+                'explore AttendGuard with 40 realistic students.</div></div>'
+                f'<div class="ag-steps">{cards_html}</div>', unsafe_allow_html=True)
+    c = st.columns([1.3, 1, 1.3])[1]
     if c.button("📂 Load sample data", width="stretch", type="primary", key="load_main"):
         load_sample_into_state()
         st.rerun()
-    with st.expander("Expected file formats"):
+    st.write("")
+    with st.expander("📋 Expected file formats"):
         for kind, (label, cols) in FILE_LABELS.items():
             st.markdown(f"**{label}:** `{cols}`")
     st.stop()
@@ -256,27 +486,33 @@ if marks_df is None:
 
 # KPI cards
 counts = students["status"].value_counts()
+n_students = max(len(students), 1)
 avg_att = students["attendance_pct"].mean() if len(students) else 0
+n_risk = int(students["at_risk"].sum())
 kpis = [
-    ("Total students", len(students), f"{students['department'].nunique()} departments", "neutral"),
-    ("Critical", int(counts.get(L.CRITICAL, 0)), f"below {target}%", "critical"),
-    ("Warning", int(counts.get(L.WARNING, 0)), f"{target}-{target + 5}%", "warning"),
-    ("Safe", int(counts.get(L.SAFE, 0)), f"≥ {target + 5}%", "safe"),
-    ("Avg attendance", f"{avg_att:.1f}%", f"{int(students['at_risk'].sum())} students need attention", "neutral"),
+    ("Total students", len(students), f"{students['department'].nunique()} departments · "
+     f"{subjects['subject'].nunique()} subjects", "👥", INDIGO, 100),
+    ("Critical", int(counts.get(L.CRITICAL, 0)), f"below {target}%", "🚨", STATUS_COLORS[L.CRITICAL],
+     counts.get(L.CRITICAL, 0) / n_students * 100),
+    ("Warning", int(counts.get(L.WARNING, 0)), f"{target}–{target + 5}%", "⚠️", STATUS_COLORS[L.WARNING],
+     counts.get(L.WARNING, 0) / n_students * 100),
+    ("Safe", int(counts.get(L.SAFE, 0)), f"≥ {target + 5}%", "✅", STATUS_COLORS[L.SAFE],
+     counts.get(L.SAFE, 0) / n_students * 100),
+    ("Avg attendance", f"{avg_att:.1f}%", f"{n_risk} students need attention", "📈", CYAN, avg_att),
 ]
-for col, (lbl, val, hint, kind) in zip(st.columns(5), kpis):
-    col.markdown(card(lbl, val, hint, kind), unsafe_allow_html=True)
+for col, (lbl, val, hint, icon, color, pct) in zip(st.columns(5), kpis):
+    col.markdown(kpi_card(lbl, val, hint, icon, color, pct), unsafe_allow_html=True)
 st.write("")
 
 tab_dash, tab_student, tab_alerts, tab_appt = st.tabs(
-    ["📊 Dashboard", "🎓 Student view", "✉️ Alerts", "📅 Appointments"])
+    ["📊  Dashboard", "🎓  Student view", "✉️  Alerts", "📅  Appointments"])
 
 
 # ---------------------------------------------------------------- dashboard
 
 with tab_dash:
     try:
-        f1, f2, f3 = st.columns([2, 2, 1])
+        f1, f2, f3 = st.columns([2, 2, 1], vertical_alignment="bottom")
         depts = sorted(students["department"].astype(str).unique())
         subs = sorted(subjects["subject"].astype(str).unique())
         sel_d = f1.multiselect("Department", depts, placeholder="All departments")
@@ -301,29 +537,27 @@ with tab_dash:
             empty_state("No students match these filters", "Try a different department or subject.")
         else:
             vs, vsub = view["students"], view["subjects"]
-            c1, c2 = st.columns(2)
-            with c1:
-                st.markdown("##### Risk by department")
+            c1, c2 = st.columns(2, gap="medium")
+            with c1.container(border=True):
+                section("Risk by department", "students by status")
                 dd = (vs.groupby(["department", "status"]).size().reset_index(name="students"))
                 fig = px.bar(dd, x="department", y="students", color="status",
                              color_discrete_map=STATUS_COLORS,
                              category_orders={"status": L.STATUS_ORDER})
-                fig.update_layout(height=330, margin=dict(l=10, r=10, t=10, b=10), legend_title_text="",
-                                  xaxis_title=None, yaxis_title="Students", bargap=0.35,
-                                  plot_bgcolor="rgba(0,0,0,0)", legend=dict(orientation="h", y=1.1))
+                fig.update_layout(**chart_layout(330, "Students"))
                 st.plotly_chart(fig, width="stretch", config=PLOT_CFG)
-            with c2:
-                st.markdown("##### Risk by subject")
+            with c2.container(border=True):
+                section("Risk by subject", "student-subject pairs by status")
                 sd = (vsub.groupby(["subject", "status"]).size().reset_index(name="students"))
+                sd["subject"] = sd["subject"].astype(str).str.replace(" ", "<br>", n=1, regex=False)
                 fig = px.bar(sd, x="subject", y="students", color="status",
                              color_discrete_map=STATUS_COLORS,
                              category_orders={"status": L.STATUS_ORDER})
-                fig.update_layout(height=330, margin=dict(l=10, r=10, t=10, b=10), legend_title_text="",
-                                  xaxis_title=None, yaxis_title="Students (per subject)", bargap=0.35,
-                                  plot_bgcolor="rgba(0,0,0,0)", legend=dict(orientation="h", y=1.1))
+                fig.update_layout(**chart_layout(330, "Students"))
                 st.plotly_chart(fig, width="stretch", config=PLOT_CFG)
 
-            st.markdown("##### Ranked at-risk students")
+            st.write("")
+            section("Ranked at-risk students", "most at-risk first")
             tbl = vs if show_safe else vs[vs["at_risk"]]
             if tbl.empty:
                 st.success("No at-risk students for this selection. 🎉")
@@ -363,8 +597,11 @@ with tab_student:
         srow = students[students["student_id"] == sid].iloc[0]
         ssub = subjects[subjects["student_id"] == sid].sort_values("attendance_pct")
 
-        st.markdown(f"### {srow['name']} &nbsp; {badge(srow['status'])}", unsafe_allow_html=True)
-        st.caption(f"{srow['student_id']} · {srow['department']} · {srow['email'] or 'no email on file'}")
+        initials = "".join(w[0] for w in str(srow["name"]).split()[:2]).upper() or "?"
+        st.markdown(f'<div class="ag-profile"><div class="ag-avatar">{initials}</div><div>'
+                    f'<div class="nm">{srow["name"]} &nbsp;{badge(srow["status"])}</div>'
+                    f'<div class="meta">🆔 {srow["student_id"]} &nbsp;·&nbsp; 🏛️ {srow["department"]} &nbsp;·&nbsp; '
+                    f'✉️ {srow["email"] or "no email on file"}</div></div></div>', unsafe_allow_html=True)
         k = st.columns(4)
         k[0].markdown(card("Overall attendance", f"{srow['attendance_pct']:.1f}%",
                            f"{int(srow['classes_attended'])} of {int(srow['classes_held'])} classes",
@@ -378,32 +615,36 @@ with tab_student:
                       unsafe_allow_html=True)
         st.write("")
 
-        c1, c2 = st.columns([3, 2])
-        with c1:
-            st.markdown("##### Attendance by subject")
+        c1, c2 = st.columns([3, 2], gap="medium")
+        with c1.container(border=True):
+            section("Attendance by subject", f"dashed line = {target}% target")
             fig = go.Figure(go.Bar(
-                x=ssub["attendance_pct"], y=ssub["subject"], orientation="h",
+                x=ssub["attendance_pct"], y=ssub["subject"], orientation="h", width=0.62,
                 marker_color=[STATUS_COLORS[s] for s in ssub["status"]],
                 text=[f"{p:.1f}%" for p in ssub["attendance_pct"]], textposition="outside",
                 hovertemplate="%{y}: %{x:.1f}%<extra></extra>"))
-            fig.add_vline(x=target, line_dash="dash", line_color="#334155",
-                          annotation_text=f"target {target}%", annotation_position="top")
-            fig.update_layout(height=60 + 48 * len(ssub), margin=dict(l=10, r=40, t=30, b=10),
-                              xaxis=dict(range=[0, 110], title=None), yaxis_title=None,
-                              plot_bgcolor="rgba(0,0,0,0)")
+            fig.add_vline(x=target, line_dash="dash", line_color="rgba(127,127,127,.85)", line_width=2)
+            fig.update_layout(**chart_layout(80 + 52 * len(ssub), None, legend=False))
+            fig.update_layout(xaxis=dict(range=[0, 112], title=None, ticksuffix="%"))
             st.plotly_chart(fig, width="stretch", config=PLOT_CFG)
-        with c2:
-            st.markdown("##### Recovery plan")
+        with c2.container(border=True):
+            section("Recovery plan", "what to do next")
+            items = ""
             for _, r in ssub.iterrows():
                 msg = L.recovery_message(r["subject"], r["classes_needed"], target)
                 if r["classes_needed"] == 0:
-                    st.success(msg, icon="✅")
+                    color, icon, tag = STATUS_COLORS[L.SAFE], "✅", "On track"
                 elif L.is_recoverable(r["classes_needed"]):
-                    st.warning(msg, icon="📌")
+                    color, icon, tag = STATUS_COLORS[L.WARNING], "🎯", f"{int(r['classes_needed'])} classes"
                 else:
-                    st.error(msg, icon="⛔")
+                    color, icon, tag = STATUS_COLORS[L.CRITICAL], "⛔", "Can't recover"
+                items += (f'<div class="ag-plan" style="--c:{color};--bg1:{tint(color, .13)};--bd:{tint(color, .35)}">'
+                          f'<div class="i">{icon}</div><div class="m"><div class="sj">{r["subject"]}'
+                          f'<span class="tg">{tag}</span></div><div class="tx">{msg}</div></div></div>')
+            st.markdown(items, unsafe_allow_html=True)
 
-        st.markdown("##### Subject details")
+        st.write("")
+        section("Subject details")
         det = pd.DataFrame({
             "Subject": ssub["subject"], "Attended": ssub["classes_attended"].astype(int),
             "Held": ssub["classes_held"].astype(int), "Attendance %": ssub["attendance_pct"],
@@ -416,7 +657,8 @@ with tab_student:
                      column_config={"Attendance %": st.column_config.NumberColumn(format="%.1f%%"),
                                     "Latest test %": st.column_config.NumberColumn(format="%.0f%%")})
 
-        st.markdown("##### Marks trend")
+        st.write("")
+        section("Marks trend", "score % per test · dotted line = 40% weak mark")
         sm = marks_pct[marks_pct["student_id"] == sid]
         if sm.empty:
             st.info("No marks on record for this student.")
@@ -424,12 +666,12 @@ with tab_student:
             sm = sm.assign(label=sm["test_name"].astype(str))
             fig = px.line(sm, x="label", y="pct", color="subject", markers=True,
                           hover_data={"test_date": True, "label": False})
-            fig.add_hline(y=L.WEAK_MARK_PCT, line_dash="dot", line_color="#dc2626",
-                          annotation_text="40% weak line", annotation_position="bottom right")
-            fig.update_layout(height=340, margin=dict(l=10, r=10, t=10, b=10), xaxis_title=None,
-                              yaxis=dict(title="Score %", range=[0, 105]), legend_title_text="",
-                              plot_bgcolor="rgba(0,0,0,0)")
-            st.plotly_chart(fig, width="stretch", config=PLOT_CFG)
+            fig.add_hline(y=L.WEAK_MARK_PCT, line_dash="dot", line_color=STATUS_COLORS[L.CRITICAL], line_width=2)
+            fig.update_traces(line=dict(width=3), marker=dict(size=9))
+            fig.update_layout(**chart_layout(340, "Score %"))
+            fig.update_layout(yaxis=dict(range=[0, 105], ticksuffix="%"))
+            with st.container(border=True):
+                st.plotly_chart(fig, width="stretch", config=PLOT_CFG)
     except Exception as exc:
         st.error(f"Couldn't show this student: {exc}")
 
@@ -439,12 +681,12 @@ with tab_student:
 def mode_banner():
     if test_mode:
         addr = test_address.strip() or "(no test address set - add one in the sidebar)"
-        st.markdown(f'<div class="ag-banner test">🧪 <b>Test mode is ON</b> - every email is redirected to '
-                    f'<b>{addr}</b>. The real recipient is noted in the subject line.</div>',
+        st.markdown(f'<div class="ag-banner test"><span class="ic">🧪</span><div><b>Test mode is ON</b> - every '
+                    f'email is redirected to <b>{addr}</b>. The real recipient is noted in the subject line.</div></div>',
                     unsafe_allow_html=True)
     else:
-        st.markdown('<div class="ag-banner live">📨 <b>Live mode</b> - emails go to the real students and '
-                    'staff addresses in your files.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="ag-banner live"><span class="ic">📨</span><div><b>Live mode</b> - emails go to '
+                    'the real students and staff addresses in your files.</div></div>', unsafe_allow_html=True)
 
 
 def send_blocker() -> str | None:
@@ -501,10 +743,11 @@ def show_results():
 def preview(email: E.Email):
     shown = E.apply_test_mode([email], test_mode, test_address)[0]
     with st.container(border=True):
-        st.markdown(f"**To:** {shown.to or '_(missing address)_'}"
+        st.markdown(f"**To:** {shown.to or '_(set a test address in the sidebar)_'}"
                     + (f" &nbsp;·&nbsp; _originally {shown.original_to}_" if test_mode else ""))
         st.markdown(f"**Subject:** {shown.subject}")
-        st.html(email.html)
+        st.html('<div style="background:#ffffff;color:#0f172a;border-radius:12px;padding:18px 22px;'
+                'border:1px solid #e2e8f0;box-shadow:0 10px 30px -18px rgba(15,23,42,.45)">' + email.html + '</div>')
     with st.expander("Plain-text version"):
         st.code(email.text, language=None)
 
@@ -595,7 +838,7 @@ with tab_alerts:
         if blocker:
             st.warning(blocker, icon="⚙️")
 
-        st.markdown("#### 1 · Student warnings")
+        section("1 · Student warnings", "personalised recovery plan for each at-risk student")
         at_risk = students[students["at_risk"]]
         if at_risk.empty:
             st.success("No at-risk students right now - nothing to send. 🎉")
@@ -627,7 +870,7 @@ with tab_alerts:
                     run_batch(emails, "Student warnings")
 
         st.divider()
-        st.markdown("#### 2 · Teacher & adviser alerts")
+        section("2 · Teacher & adviser alerts", "summary tables for the right staff")
         if staff_df is None:
             st.info("Upload a **staff** file (or load the sample data) to alert subject teachers and "
                     "faculty advisers.", icon="👩‍🏫")
@@ -650,7 +893,7 @@ with tab_alerts:
                         run_batch(staff_mail, "Teacher & adviser alerts")
 
         st.divider()
-        st.markdown("#### 3 · Weekly summary")
+        section("3 · Weekly summary", "department-wise digest for advisers")
         if staff_df is None:
             st.info("Upload a **staff** file to send department-wise weekly summaries to advisers.", icon="🗓️")
         else:
@@ -673,7 +916,7 @@ with tab_alerts:
                         run_batch(weekly, "Weekly summary")
 
         st.divider()
-        st.markdown("#### Send results")
+        section("Send results", "sent / failed per message")
         show_results()
     except Exception as exc:
         st.error(f"Something went wrong in the alerts tab: {exc}")
@@ -711,8 +954,8 @@ with tab_appt:
             risky = students[students["at_risk"]]
             names = dict(zip(risky["student_id"], risky["name"] + "  ·  " + risky["status"]))
             c1, c2 = st.columns([2, 3], gap="large")
-            with c1:
-                st.markdown("#### Book a support meeting")
+            with c1.container(border=True):
+                section("Book a support meeting")
                 sid = st.selectbox("At-risk student", list(names), format_func=lambda x: names[x],
                                    key="appt_student")
                 srow = students[students["student_id"] == sid].iloc[0]
@@ -740,7 +983,7 @@ with tab_appt:
                              for d, t in zip(tt["day"], tt["time_slot"])]]
                     tt["_d"] = tt["day"].map(lambda d: DAY_ORDER.get(_key(d), 99))
                     tt = tt.sort_values(["_d", "time_slot"])
-                    st.markdown(f"#### Free slots with {tname}")
+                    section(f"Free slots with {tname}", "✅ = free")
                     if tt.empty:
                         st.info(f"{tname} has no free slots left in the timetable. Try another subject, "
                                 "or contact the teacher directly.")
@@ -783,7 +1026,7 @@ with tab_appt:
             for kind, msg in ss.pop("appt_msgs", []):
                 getattr(st, kind)(msg)
             st.divider()
-            st.markdown("#### Bookings")
+            section("Bookings", "this session")
             if not ss.bookings:
                 st.caption("No bookings yet. Booked meetings will appear here for this session.")
             else:

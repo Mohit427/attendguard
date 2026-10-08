@@ -13,6 +13,8 @@ AttendGuard takes a college's attendance, marks and staff files and works out wh
 | **Alerts** | Preview, then send personalised student warnings (all at-risk or selected). Teacher alerts list the at-risk students in their subjects; adviser alerts list those in their department. Also a department-wise weekly summary. Test mode is **on by default** |
 | **Appointments** | Pick an at-risk student and subject, see the teacher's free slots, book one, and send confirmation emails to the student and the teacher |
 
+A **🌙 Dark mode** toggle in the sidebar switches between the custom light and dark themes (defined in `.streamlit/config.toml`). Loaded data is kept across the switch.
+
 Input files (CSV or XLSX, uploaded in the sidebar). A **Load sample data** button loads realistic data from `sample_data/` (40 students, 3 departments, 5 subjects).
 
 | File | Columns |

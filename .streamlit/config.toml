@@ -1,10 +1,44 @@
-[theme]
-base = "light"
-primaryColor = "#2563eb"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f1f5f9"
-textColor = "#0f172a"
-font = "sans serif"
+[client]
+toolbarMode = "viewer"
 
 [server]
 maxUploadSize = 20
+
+# Two palettes; the app's Light/Dark toggle (sidebar) switches between them.
+[theme.light]
+primaryColor = "#4f46e5"
+backgroundColor = "#f5f6fb"
+secondaryBackgroundColor = "#eceef8"
+textColor = "#0f172a"
+borderColor = "#dfe3f0"
+linkColor = "#4f46e5"
+font = "Plus Jakarta Sans:https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+headingFont = "Plus Jakarta Sans:https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+baseRadius = "0.75rem"
+buttonRadius = "0.7rem"
+showWidgetBorder = true
+dataframeHeaderBackgroundColor = "#eef0fb"
+chartCategoricalColors = ["#6366f1", "#06b6d4", "#f59e0b", "#ec4899", "#10b981", "#8b5cf6"]
+
+[theme.light.sidebar]
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f1f2fa"
+
+[theme.dark]
+primaryColor = "#818cf8"
+backgroundColor = "#0b1020"
+secondaryBackgroundColor = "#161d33"
+textColor = "#e6e9f5"
+borderColor = "#252e4a"
+linkColor = "#a5b4fc"
+font = "Plus Jakarta Sans:https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+headingFont = "Plus Jakarta Sans:https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+baseRadius = "0.75rem"
+buttonRadius = "0.7rem"
+showWidgetBorder = true
+dataframeHeaderBackgroundColor = "#161d33"
+chartCategoricalColors = ["#818cf8", "#22d3ee", "#fbbf24", "#f472b6", "#34d399", "#a78bfa"]
+
+[theme.dark.sidebar]
+backgroundColor = "#0f1528"
+secondaryBackgroundColor = "#1a2240"
