@@ -1,0 +1,521 @@
+student_id,subject,test_name,test_date,marks,max_marks
+S101,Mathematics,Unit Test 1,2026-07-20,32,50
+S101,Mathematics,Unit Test 2,2026-08-24,34,50
+S101,Mathematics,Mid Term,2026-09-28,67,100
+S101,Physics,Unit Test 1,2026-07-20,36,50
+S101,Physics,Unit Test 2,2026-08-24,36,50
+S101,Physics,Mid Term,2026-09-28,75,100
+S101,Programming,Unit Test 1,2026-07-20,33,50
+S101,Programming,Unit Test 2,2026-08-24,34,50
+S101,Programming,Mid Term,2026-09-28,74,100
+S101,Digital Logic,Unit Test 1,2026-07-20,36,50
+S101,Digital Logic,Unit Test 2,2026-08-24,34,50
+S101,Communication Skills,Unit Test 1,2026-07-20,40,50
+S101,Communication Skills,Unit Test 2,2026-08-24,38,50
+S102,Mathematics,Unit Test 1,2026-07-20,38,50
+S102,Mathematics,Unit Test 2,2026-08-24,40,50
+S102,Mathematics,Mid Term,2026-09-28,70,100
+S102,Physics,Unit Test 1,2026-07-20,33,50
+S102,Physics,Unit Test 2,2026-08-24,35,50
+S102,Physics,Mid Term,2026-09-28,58,100
+S102,Programming,Unit Test 1,2026-07-20,37,50
+S102,Programming,Unit Test 2,2026-08-24,38,50
+S102,Programming,Mid Term,2026-09-28,74,100
+S102,Digital Logic,Unit Test 1,2026-07-20,40,50
+S102,Digital Logic,Unit Test 2,2026-08-24,39,50
+S102,Communication Skills,Unit Test 1,2026-07-20,38,50
+S102,Communication Skills,Unit Test 2,2026-08-24,36,50
+S103,Mathematics,Unit Test 1,2026-07-20,33,50
+S103,Mathematics,Unit Test 2,2026-08-24,28,50
+S103,Mathematics,Mid Term,2026-09-28,42,100
+S103,Physics,Unit Test 1,2026-07-20,39,50
+S103,Physics,Unit Test 2,2026-08-24,34,50
+S103,Physics,Mid Term,2026-09-28,52,100
+S103,Programming,Unit Test 1,2026-07-20,32,50
+S103,Programming,Unit Test 2,2026-08-24,25,50
+S103,Programming,Mid Term,2026-09-28,43,100
+S103,Digital Logic,Unit Test 1,2026-07-20,38,50
+S103,Digital Logic,Unit Test 2,2026-08-24,32,50
+S103,Communication Skills,Unit Test 1,2026-07-20,38,50
+S103,Communication Skills,Unit Test 2,2026-08-24,33,50
+S104,Mathematics,Unit Test 1,2026-07-20,34,50
+S104,Mathematics,Unit Test 2,2026-08-24,33,50
+S104,Mathematics,Mid Term,2026-09-28,61,100
+S104,Physics,Unit Test 1,2026-07-20,40,50
+S104,Physics,Unit Test 2,2026-08-24,38,50
+S104,Physics,Mid Term,2026-09-28,79,100
+S104,Programming,Unit Test 1,2026-07-20,40,50
+S104,Programming,Unit Test 2,2026-08-24,38,50
+S104,Programming,Mid Term,2026-09-28,71,100
+S104,Digital Logic,Unit Test 1,2026-07-20,40,50
+S104,Digital Logic,Unit Test 2,2026-08-24,39,50
+S104,Communication Skills,Unit Test 1,2026-07-20,38,50
+S104,Communication Skills,Unit Test 2,2026-08-24,36,50
+S105,Mathematics,Unit Test 1,2026-07-20,17,50
+S105,Mathematics,Unit Test 2,2026-08-24,16,50
+S105,Mathematics,Mid Term,2026-09-28,40,100
+S105,Physics,Unit Test 1,2026-07-20,14,50
+S105,Physics,Unit Test 2,2026-08-24,15,50
+S105,Physics,Mid Term,2026-09-28,29,100
+S105,Programming,Unit Test 1,2026-07-20,21,50
+S105,Programming,Unit Test 2,2026-08-24,21,50
+S105,Programming,Mid Term,2026-09-28,38,100
+S105,Digital Logic,Unit Test 1,2026-07-20,18,50
+S105,Digital Logic,Unit Test 2,2026-08-24,16,50
+S105,Communication Skills,Unit Test 1,2026-07-20,14,50
+S105,Communication Skills,Unit Test 2,2026-08-24,12,50
+S106,Mathematics,Unit Test 1,2026-07-20,14,50
+S106,Mathematics,Unit Test 2,2026-08-24,14,50
+S106,Mathematics,Mid Term,2026-09-28,29,100
+S106,Physics,Unit Test 1,2026-07-20,16,50
+S106,Physics,Unit Test 2,2026-08-24,17,50
+S106,Physics,Mid Term,2026-09-28,30,100
+S106,Programming,Unit Test 1,2026-07-20,20,50
+S106,Programming,Unit Test 2,2026-08-24,19,50
+S106,Programming,Mid Term,2026-09-28,43,100
+S106,Digital Logic,Unit Test 1,2026-07-20,20,50
+S106,Digital Logic,Unit Test 2,2026-08-24,20,50
+S106,Communication Skills,Unit Test 1,2026-07-20,17,50
+S106,Communication Skills,Unit Test 2,2026-08-24,18,50
+S107,Mathematics,Unit Test 1,2026-07-20,35,50
+S107,Mathematics,Unit Test 2,2026-08-24,29,50
+S107,Mathematics,Mid Term,2026-09-28,46,100
+S107,Physics,Unit Test 1,2026-07-20,38,50
+S107,Physics,Unit Test 2,2026-08-24,31,50
+S107,Physics,Mid Term,2026-09-28,49,100
+S107,Programming,Unit Test 1,2026-07-20,37,50
+S107,Programming,Unit Test 2,2026-08-24,30,50
+S107,Programming,Mid Term,2026-09-28,48,100
+S107,Digital Logic,Unit Test 1,2026-07-20,34,50
+S107,Digital Logic,Unit Test 2,2026-08-24,28,50
+S107,Communication Skills,Unit Test 1,2026-07-20,34,50
+S107,Communication Skills,Unit Test 2,2026-08-24,28,50
+S108,Mathematics,Unit Test 1,2026-07-20,32,50
+S108,Mathematics,Unit Test 2,2026-08-24,30,50
+S108,Mathematics,Mid Term,2026-09-28,62,100
+S108,Physics,Unit Test 1,2026-07-20,32,50
+S108,Physics,Unit Test 2,2026-08-24,34,50
+S108,Physics,Mid Term,2026-09-28,62,100
+S108,Programming,Unit Test 1,2026-07-20,40,50
+S108,Programming,Unit Test 2,2026-08-24,42,50
+S108,Programming,Mid Term,2026-09-28,76,100
+S108,Digital Logic,Unit Test 1,2026-07-20,36,50
+S108,Digital Logic,Unit Test 2,2026-08-24,36,50
+S108,Communication Skills,Unit Test 1,2026-07-20,37,50
+S108,Communication Skills,Unit Test 2,2026-08-24,36,50
+S109,Mathematics,Unit Test 1,2026-07-20,18,50
+S109,Mathematics,Unit Test 2,2026-08-24,19,50
+S109,Mathematics,Mid Term,2026-09-28,40,100
+S109,Physics,Unit Test 1,2026-07-20,19,50
+S109,Physics,Unit Test 2,2026-08-24,20,50
+S109,Physics,Mid Term,2026-09-28,40,100
+S109,Programming,Unit Test 1,2026-07-20,16,50
+S109,Programming,Unit Test 2,2026-08-24,16,50
+S109,Programming,Mid Term,2026-09-28,25,100
+S109,Digital Logic,Unit Test 1,2026-07-20,16,50
+S109,Digital Logic,Unit Test 2,2026-08-24,17,50
+S109,Communication Skills,Unit Test 1,2026-07-20,17,50
+S109,Communication Skills,Unit Test 2,2026-08-24,15,50
+S110,Mathematics,Unit Test 1,2026-07-20,14,50
+S110,Mathematics,Unit Test 2,2026-08-24,12,50
+S110,Mathematics,Mid Term,2026-09-28,21,100
+S110,Physics,Unit Test 1,2026-07-20,18,50
+S110,Physics,Unit Test 2,2026-08-24,16,50
+S110,Physics,Mid Term,2026-09-28,41,100
+S110,Programming,Unit Test 1,2026-07-20,16,50
+S110,Programming,Unit Test 2,2026-08-24,14,50
+S110,Programming,Mid Term,2026-09-28,35,100
+S110,Digital Logic,Unit Test 1,2026-07-20,20,50
+S110,Digital Logic,Unit Test 2,2026-08-24,18,50
+S110,Communication Skills,Unit Test 1,2026-07-20,17,50
+S110,Communication Skills,Unit Test 2,2026-08-24,18,50
+S111,Mathematics,Unit Test 1,2026-07-20,22,50
+S111,Mathematics,Unit Test 2,2026-08-24,28,50
+S111,Mathematics,Mid Term,2026-09-28,64,100
+S111,Physics,Unit Test 1,2026-07-20,22,50
+S111,Physics,Unit Test 2,2026-08-24,28,50
+S111,Physics,Mid Term,2026-09-28,67,100
+S111,Programming,Unit Test 1,2026-07-20,26,50
+S111,Programming,Unit Test 2,2026-08-24,32,50
+S111,Programming,Mid Term,2026-09-28,75,100
+S111,Digital Logic,Unit Test 1,2026-07-20,24,50
+S111,Digital Logic,Unit Test 2,2026-08-24,30,50
+S111,Communication Skills,Unit Test 1,2026-07-20,21,50
+S111,Communication Skills,Unit Test 2,2026-08-24,28,50
+S112,Mathematics,Unit Test 1,2026-07-20,36,50
+S112,Mathematics,Unit Test 2,2026-08-24,34,50
+S112,Mathematics,Mid Term,2026-09-28,79,100
+S112,Physics,Unit Test 1,2026-07-20,39,50
+S112,Physics,Unit Test 2,2026-08-24,40,50
+S112,Physics,Mid Term,2026-09-28,84,100
+S112,Programming,Unit Test 1,2026-07-20,34,50
+S112,Programming,Unit Test 2,2026-08-24,36,50
+S112,Programming,Mid Term,2026-09-28,66,100
+S112,Digital Logic,Unit Test 1,2026-07-20,38,50
+S112,Digital Logic,Unit Test 2,2026-08-24,37,50
+S112,Communication Skills,Unit Test 1,2026-07-20,34,50
+S112,Communication Skills,Unit Test 2,2026-08-24,34,50
+S113,Mathematics,Unit Test 1,2026-07-20,16,50
+S113,Mathematics,Unit Test 2,2026-08-24,15,50
+S113,Mathematics,Mid Term,2026-09-28,31,100
+S113,Physics,Unit Test 1,2026-07-20,15,50
+S113,Physics,Unit Test 2,2026-08-24,15,50
+S113,Physics,Mid Term,2026-09-28,36,100
+S113,Programming,Unit Test 1,2026-07-20,19,50
+S113,Programming,Unit Test 2,2026-08-24,20,50
+S113,Programming,Mid Term,2026-09-28,30,100
+S113,Digital Logic,Unit Test 1,2026-07-20,13,50
+S113,Digital Logic,Unit Test 2,2026-08-24,14,50
+S113,Communication Skills,Unit Test 1,2026-07-20,20,50
+S113,Communication Skills,Unit Test 2,2026-08-24,21,50
+S114,Mathematics,Unit Test 1,2026-07-20,38,50
+S114,Mathematics,Unit Test 2,2026-08-24,33,50
+S114,Mathematics,Mid Term,2026-09-28,53,100
+S114,Physics,Unit Test 1,2026-07-20,31,50
+S114,Physics,Unit Test 2,2026-08-24,24,50
+S114,Physics,Mid Term,2026-09-28,44,100
+S114,Programming,Unit Test 1,2026-07-20,36,50
+S114,Programming,Unit Test 2,2026-08-24,30,50
+S114,Programming,Mid Term,2026-09-28,53,100
+S114,Digital Logic,Unit Test 1,2026-07-20,32,50
+S114,Digital Logic,Unit Test 2,2026-08-24,26,50
+S114,Communication Skills,Unit Test 1,2026-07-20,34,50
+S114,Communication Skills,Unit Test 2,2026-08-24,30,50
+S115,Mathematics,Unit Test 1,2026-07-20,39,50
+S115,Mathematics,Unit Test 2,2026-08-24,34,50
+S115,Mathematics,Mid Term,2026-09-28,56,100
+S115,Physics,Unit Test 1,2026-07-20,37,50
+S115,Physics,Unit Test 2,2026-08-24,32,50
+S115,Physics,Mid Term,2026-09-28,52,100
+S115,Programming,Unit Test 1,2026-07-20,37,50
+S115,Programming,Unit Test 2,2026-08-24,32,50
+S115,Programming,Mid Term,2026-09-28,48,100
+S115,Digital Logic,Unit Test 1,2026-07-20,38,50
+S115,Digital Logic,Unit Test 2,2026-08-24,31,50
+S115,Communication Skills,Unit Test 1,2026-07-20,36,50
+S115,Communication Skills,Unit Test 2,2026-08-24,30,50
+S116,Mathematics,Unit Test 1,2026-07-20,36,50
+S116,Mathematics,Unit Test 2,2026-08-24,34,50
+S116,Mathematics,Mid Term,2026-09-28,71,100
+S116,Physics,Unit Test 1,2026-07-20,38,50
+S116,Physics,Unit Test 2,2026-08-24,40,50
+S116,Physics,Mid Term,2026-09-28,71,100
+S116,Programming,Unit Test 1,2026-07-20,36,50
+S116,Programming,Unit Test 2,2026-08-24,36,50
+S116,Programming,Mid Term,2026-09-28,63,100
+S116,Digital Logic,Unit Test 1,2026-07-20,39,50
+S116,Digital Logic,Unit Test 2,2026-08-24,39,50
+S116,Communication Skills,Unit Test 1,2026-07-20,34,50
+S116,Communication Skills,Unit Test 2,2026-08-24,34,50
+S117,Mathematics,Unit Test 1,2026-07-20,14,50
+S117,Mathematics,Unit Test 2,2026-08-24,13,50
+S117,Mathematics,Mid Term,2026-09-28,23,100
+S117,Physics,Unit Test 1,2026-07-20,18,50
+S117,Physics,Unit Test 2,2026-08-24,16,50
+S117,Physics,Mid Term,2026-09-28,31,100
+S117,Programming,Unit Test 1,2026-07-20,18,50
+S117,Programming,Unit Test 2,2026-08-24,18,50
+S117,Programming,Mid Term,2026-09-28,31,100
+S117,Digital Logic,Unit Test 1,2026-07-20,16,50
+S117,Digital Logic,Unit Test 2,2026-08-24,14,50
+S117,Communication Skills,Unit Test 1,2026-07-20,17,50
+S117,Communication Skills,Unit Test 2,2026-08-24,18,50
+S118,Mathematics,Unit Test 1,2026-07-20,34,50
+S118,Mathematics,Unit Test 2,2026-08-24,30,50
+S118,Mathematics,Mid Term,2026-09-28,45,100
+S118,Physics,Unit Test 1,2026-07-20,33,50
+S118,Physics,Unit Test 2,2026-08-24,26,50
+S118,Physics,Mid Term,2026-09-28,38,100
+S118,Programming,Unit Test 1,2026-07-20,35,50
+S118,Programming,Unit Test 2,2026-08-24,30,50
+S118,Programming,Mid Term,2026-09-28,52,100
+S118,Digital Logic,Unit Test 1,2026-07-20,32,50
+S118,Digital Logic,Unit Test 2,2026-08-24,27,50
+S118,Communication Skills,Unit Test 1,2026-07-20,34,50
+S118,Communication Skills,Unit Test 2,2026-08-24,29,50
+S119,Mathematics,Unit Test 1,2026-07-20,20,50
+S119,Mathematics,Unit Test 2,2026-08-24,26,50
+S119,Mathematics,Mid Term,2026-09-28,59,100
+S119,Physics,Unit Test 1,2026-07-20,25,50
+S119,Physics,Unit Test 2,2026-08-24,31,50
+S119,Physics,Mid Term,2026-09-28,68,100
+S119,Programming,Unit Test 1,2026-07-20,26,50
+S119,Programming,Unit Test 2,2026-08-24,32,50
+S119,Programming,Mid Term,2026-09-28,75,100
+S119,Digital Logic,Unit Test 1,2026-07-20,24,50
+S119,Digital Logic,Unit Test 2,2026-08-24,30,50
+S119,Communication Skills,Unit Test 1,2026-07-20,26,50
+S119,Communication Skills,Unit Test 2,2026-08-24,32,50
+S120,Mathematics,Unit Test 1,2026-07-20,38,50
+S120,Mathematics,Unit Test 2,2026-08-24,32,50
+S120,Mathematics,Mid Term,2026-09-28,56,100
+S120,Physics,Unit Test 1,2026-07-20,32,50
+S120,Physics,Unit Test 2,2026-08-24,26,50
+S120,Physics,Mid Term,2026-09-28,36,100
+S120,Programming,Unit Test 1,2026-07-20,38,50
+S120,Programming,Unit Test 2,2026-08-24,31,50
+S120,Programming,Mid Term,2026-09-28,47,100
+S120,Digital Logic,Unit Test 1,2026-07-20,36,50
+S120,Digital Logic,Unit Test 2,2026-08-24,30,50
+S120,Communication Skills,Unit Test 1,2026-07-20,31,50
+S120,Communication Skills,Unit Test 2,2026-08-24,26,50
+S121,Mathematics,Unit Test 1,2026-07-20,38,50
+S121,Mathematics,Unit Test 2,2026-08-24,36,50
+S121,Mathematics,Mid Term,2026-09-28,74,100
+S121,Physics,Unit Test 1,2026-07-20,36,50
+S121,Physics,Unit Test 2,2026-08-24,36,50
+S121,Physics,Mid Term,2026-09-28,73,100
+S121,Programming,Unit Test 1,2026-07-20,38,50
+S121,Programming,Unit Test 2,2026-08-24,39,50
+S121,Programming,Mid Term,2026-09-28,83,100
+S121,Digital Logic,Unit Test 1,2026-07-20,32,50
+S121,Digital Logic,Unit Test 2,2026-08-24,32,50
+S121,Communication Skills,Unit Test 1,2026-07-20,38,50
+S121,Communication Skills,Unit Test 2,2026-08-24,38,50
+S122,Mathematics,Unit Test 1,2026-07-20,38,50
+S122,Mathematics,Unit Test 2,2026-08-24,32,50
+S122,Mathematics,Mid Term,2026-09-28,54,100
+S122,Physics,Unit Test 1,2026-07-20,38,50
+S122,Physics,Unit Test 2,2026-08-24,32,50
+S122,Physics,Mid Term,2026-09-28,52,100
+S122,Programming,Unit Test 1,2026-07-20,34,50
+S122,Programming,Unit Test 2,2026-08-24,29,50
+S122,Programming,Mid Term,2026-09-28,51,100
+S122,Digital Logic,Unit Test 1,2026-07-20,33,50
+S122,Digital Logic,Unit Test 2,2026-08-24,26,50
+S122,Communication Skills,Unit Test 1,2026-07-20,36,50
+S122,Communication Skills,Unit Test 2,2026-08-24,29,50
+S123,Mathematics,Unit Test 1,2026-07-20,39,50
+S123,Mathematics,Unit Test 2,2026-08-24,34,50
+S123,Mathematics,Mid Term,2026-09-28,50,100
+S123,Physics,Unit Test 1,2026-07-20,39,50
+S123,Physics,Unit Test 2,2026-08-24,32,50
+S123,Physics,Mid Term,2026-09-28,52,100
+S123,Programming,Unit Test 1,2026-07-20,32,50
+S123,Programming,Unit Test 2,2026-08-24,27,50
+S123,Programming,Mid Term,2026-09-28,37,100
+S123,Digital Logic,Unit Test 1,2026-07-20,36,50
+S123,Digital Logic,Unit Test 2,2026-08-24,30,50
+S123,Communication Skills,Unit Test 1,2026-07-20,32,50
+S123,Communication Skills,Unit Test 2,2026-08-24,28,50
+S124,Mathematics,Unit Test 1,2026-07-20,19,50
+S124,Mathematics,Unit Test 2,2026-08-24,20,50
+S124,Mathematics,Mid Term,2026-09-28,32,100
+S124,Physics,Unit Test 1,2026-07-20,13,50
+S124,Physics,Unit Test 2,2026-08-24,14,50
+S124,Physics,Mid Term,2026-09-28,22,100
+S124,Programming,Unit Test 1,2026-07-20,21,50
+S124,Programming,Unit Test 2,2026-08-24,20,50
+S124,Programming,Mid Term,2026-09-28,48,100
+S124,Digital Logic,Unit Test 1,2026-07-20,16,50
+S124,Digital Logic,Unit Test 2,2026-08-24,16,50
+S124,Communication Skills,Unit Test 1,2026-07-20,20,50
+S124,Communication Skills,Unit Test 2,2026-08-24,22,50
+S125,Mathematics,Unit Test 1,2026-07-20,34,50
+S125,Mathematics,Unit Test 2,2026-08-24,36,50
+S125,Mathematics,Mid Term,2026-09-28,77,100
+S125,Physics,Unit Test 1,2026-07-20,39,50
+S125,Physics,Unit Test 2,2026-08-24,38,50
+S125,Physics,Mid Term,2026-09-28,82,100
+S125,Programming,Unit Test 1,2026-07-20,33,50
+S125,Programming,Unit Test 2,2026-08-24,32,50
+S125,Programming,Mid Term,2026-09-28,58,100
+S125,Digital Logic,Unit Test 1,2026-07-20,40,50
+S125,Digital Logic,Unit Test 2,2026-08-24,40,50
+S125,Communication Skills,Unit Test 1,2026-07-20,38,50
+S125,Communication Skills,Unit Test 2,2026-08-24,37,50
+S126,Mathematics,Unit Test 1,2026-07-20,14,50
+S126,Mathematics,Unit Test 2,2026-08-24,14,50
+S126,Mathematics,Mid Term,2026-09-28,31,100
+S126,Physics,Unit Test 1,2026-07-20,14,50
+S126,Physics,Unit Test 2,2026-08-24,12,50
+S126,Physics,Mid Term,2026-09-28,20,100
+S126,Programming,Unit Test 1,2026-07-20,13,50
+S126,Programming,Unit Test 2,2026-08-24,14,50
+S126,Programming,Mid Term,2026-09-28,28,100
+S126,Digital Logic,Unit Test 1,2026-07-20,20,50
+S126,Digital Logic,Unit Test 2,2026-08-24,18,50
+S126,Communication Skills,Unit Test 1,2026-07-20,14,50
+S126,Communication Skills,Unit Test 2,2026-08-24,15,50
+S127,Mathematics,Unit Test 1,2026-07-20,32,50
+S127,Mathematics,Unit Test 2,2026-08-24,26,50
+S127,Mathematics,Mid Term,2026-09-28,41,100
+S127,Physics,Unit Test 1,2026-07-20,36,50
+S127,Physics,Unit Test 2,2026-08-24,30,50
+S127,Physics,Mid Term,2026-09-28,51,100
+S127,Programming,Unit Test 1,2026-07-20,36,50
+S127,Programming,Unit Test 2,2026-08-24,28,50
+S127,Programming,Mid Term,2026-09-28,53,100
+S127,Digital Logic,Unit Test 1,2026-07-20,38,50
+S127,Digital Logic,Unit Test 2,2026-08-24,31,50
+S127,Communication Skills,Unit Test 1,2026-07-20,31,50
+S127,Communication Skills,Unit Test 2,2026-08-24,24,50
+S128,Mathematics,Unit Test 1,2026-07-20,34,50
+S128,Mathematics,Unit Test 2,2026-08-24,32,50
+S128,Mathematics,Mid Term,2026-09-28,72,100
+S128,Physics,Unit Test 1,2026-07-20,32,50
+S128,Physics,Unit Test 2,2026-08-24,34,50
+S128,Physics,Mid Term,2026-09-28,64,100
+S128,Programming,Unit Test 1,2026-07-20,40,50
+S128,Programming,Unit Test 2,2026-08-24,38,50
+S128,Programming,Mid Term,2026-09-28,85,100
+S128,Digital Logic,Unit Test 1,2026-07-20,33,50
+S128,Digital Logic,Unit Test 2,2026-08-24,32,50
+S128,Communication Skills,Unit Test 1,2026-07-20,35,50
+S128,Communication Skills,Unit Test 2,2026-08-24,36,50
+S129,Mathematics,Unit Test 1,2026-07-20,20,50
+S129,Mathematics,Unit Test 2,2026-08-24,26,50
+S129,Mathematics,Mid Term,2026-09-28,65,100
+S129,Physics,Unit Test 1,2026-07-20,26,50
+S129,Physics,Unit Test 2,2026-08-24,32,50
+S129,Physics,Mid Term,2026-09-28,71,100
+S129,Programming,Unit Test 1,2026-07-20,24,50
+S129,Programming,Unit Test 2,2026-08-24,30,50
+S129,Programming,Mid Term,2026-09-28,73,100
+S129,Digital Logic,Unit Test 1,2026-07-20,20,50
+S129,Digital Logic,Unit Test 2,2026-08-24,26,50
+S129,Communication Skills,Unit Test 1,2026-07-20,24,50
+S129,Communication Skills,Unit Test 2,2026-08-24,29,50
+S130,Mathematics,Unit Test 1,2026-07-20,36,50
+S130,Mathematics,Unit Test 2,2026-08-24,38,50
+S130,Mathematics,Mid Term,2026-09-28,65,100
+S130,Physics,Unit Test 1,2026-07-20,37,50
+S130,Physics,Unit Test 2,2026-08-24,38,50
+S130,Physics,Mid Term,2026-09-28,76,100
+S130,Programming,Unit Test 1,2026-07-20,39,50
+S130,Programming,Unit Test 2,2026-08-24,39,50
+S130,Programming,Mid Term,2026-09-28,76,100
+S130,Digital Logic,Unit Test 1,2026-07-20,34,50
+S130,Digital Logic,Unit Test 2,2026-08-24,36,50
+S130,Communication Skills,Unit Test 1,2026-07-20,36,50
+S130,Communication Skills,Unit Test 2,2026-08-24,36,50
+S131,Mathematics,Unit Test 1,2026-07-20,13,50
+S131,Mathematics,Unit Test 2,2026-08-24,14,50
+S131,Mathematics,Mid Term,2026-09-28,18,100
+S131,Physics,Unit Test 1,2026-07-20,18,50
+S131,Physics,Unit Test 2,2026-08-24,18,50
+S131,Physics,Mid Term,2026-09-28,31,100
+S131,Programming,Unit Test 1,2026-07-20,18,50
+S131,Programming,Unit Test 2,2026-08-24,19,50
+S131,Programming,Mid Term,2026-09-28,28,100
+S131,Digital Logic,Unit Test 1,2026-07-20,21,50
+S131,Digital Logic,Unit Test 2,2026-08-24,22,50
+S131,Communication Skills,Unit Test 1,2026-07-20,18,50
+S131,Communication Skills,Unit Test 2,2026-08-24,19,50
+S132,Mathematics,Unit Test 1,2026-07-20,36,50
+S132,Mathematics,Unit Test 2,2026-08-24,36,50
+S132,Mathematics,Mid Term,2026-09-28,69,100
+S132,Physics,Unit Test 1,2026-07-20,34,50
+S132,Physics,Unit Test 2,2026-08-24,34,50
+S132,Physics,Mid Term,2026-09-28,65,100
+S132,Programming,Unit Test 1,2026-07-20,32,50
+S132,Programming,Unit Test 2,2026-08-24,34,50
+S132,Programming,Mid Term,2026-09-28,71,100
+S132,Digital Logic,Unit Test 1,2026-07-20,36,50
+S132,Digital Logic,Unit Test 2,2026-08-24,38,50
+S132,Communication Skills,Unit Test 1,2026-07-20,35,50
+S132,Communication Skills,Unit Test 2,2026-08-24,37,50
+S133,Mathematics,Unit Test 1,2026-07-20,38,50
+S133,Mathematics,Unit Test 2,2026-08-24,38,50
+S133,Mathematics,Mid Term,2026-09-28,76,100
+S133,Physics,Unit Test 1,2026-07-20,36,50
+S133,Physics,Unit Test 2,2026-08-24,36,50
+S133,Physics,Mid Term,2026-09-28,80,100
+S133,Programming,Unit Test 1,2026-07-20,37,50
+S133,Programming,Unit Test 2,2026-08-24,36,50
+S133,Programming,Mid Term,2026-09-28,78,100
+S133,Digital Logic,Unit Test 1,2026-07-20,36,50
+S133,Digital Logic,Unit Test 2,2026-08-24,35,50
+S133,Communication Skills,Unit Test 1,2026-07-20,32,50
+S133,Communication Skills,Unit Test 2,2026-08-24,34,50
+S134,Mathematics,Unit Test 1,2026-07-20,18,50
+S134,Mathematics,Unit Test 2,2026-08-24,26,50
+S134,Mathematics,Mid Term,2026-09-28,55,100
+S134,Physics,Unit Test 1,2026-07-20,21,50
+S134,Physics,Unit Test 2,2026-08-24,27,50
+S134,Physics,Mid Term,2026-09-28,70,100
+S134,Programming,Unit Test 1,2026-07-20,25,50
+S134,Programming,Unit Test 2,2026-08-24,30,50
+S134,Programming,Mid Term,2026-09-28,70,100
+S134,Digital Logic,Unit Test 1,2026-07-20,22,50
+S134,Digital Logic,Unit Test 2,2026-08-24,28,50
+S134,Communication Skills,Unit Test 1,2026-07-20,20,50
+S134,Communication Skills,Unit Test 2,2026-08-24,24,50
+S135,Mathematics,Unit Test 1,2026-07-20,36,50
+S135,Mathematics,Unit Test 2,2026-08-24,37,50
+S135,Mathematics,Mid Term,2026-09-28,79,100
+S135,Physics,Unit Test 1,2026-07-20,36,50
+S135,Physics,Unit Test 2,2026-08-24,36,50
+S135,Physics,Mid Term,2026-09-28,63,100
+S135,Programming,Unit Test 1,2026-07-20,40,50
+S135,Programming,Unit Test 2,2026-08-24,42,50
+S135,Programming,Mid Term,2026-09-28,72,100
+S135,Digital Logic,Unit Test 1,2026-07-20,32,50
+S135,Digital Logic,Unit Test 2,2026-08-24,32,50
+S135,Communication Skills,Unit Test 1,2026-07-20,33,50
+S135,Communication Skills,Unit Test 2,2026-08-24,32,50
+S136,Mathematics,Unit Test 1,2026-07-20,34,50
+S136,Mathematics,Unit Test 2,2026-08-24,35,50
+S136,Mathematics,Mid Term,2026-09-28,76,100
+S136,Physics,Unit Test 1,2026-07-20,38,50
+S136,Physics,Unit Test 2,2026-08-24,36,50
+S136,Physics,Mid Term,2026-09-28,84,100
+S136,Programming,Unit Test 1,2026-07-20,38,50
+S136,Programming,Unit Test 2,2026-08-24,36,50
+S136,Programming,Mid Term,2026-09-28,67,100
+S136,Digital Logic,Unit Test 1,2026-07-20,39,50
+S136,Digital Logic,Unit Test 2,2026-08-24,40,50
+S136,Communication Skills,Unit Test 1,2026-07-20,32,50
+S136,Communication Skills,Unit Test 2,2026-08-24,33,50
+S137,Mathematics,Unit Test 1,2026-07-20,25,50
+S137,Mathematics,Unit Test 2,2026-08-24,30,50
+S137,Mathematics,Mid Term,2026-09-28,76,100
+S137,Physics,Unit Test 1,2026-07-20,24,50
+S137,Physics,Unit Test 2,2026-08-24,29,50
+S137,Physics,Mid Term,2026-09-28,75,100
+S137,Programming,Unit Test 1,2026-07-20,26,50
+S137,Programming,Unit Test 2,2026-08-24,30,50
+S137,Programming,Mid Term,2026-09-28,77,100
+S137,Digital Logic,Unit Test 1,2026-07-20,24,50
+S137,Digital Logic,Unit Test 2,2026-08-24,28,50
+S137,Communication Skills,Unit Test 1,2026-07-20,22,50
+S137,Communication Skills,Unit Test 2,2026-08-24,28,50
+S138,Mathematics,Unit Test 1,2026-07-20,36,50
+S138,Mathematics,Unit Test 2,2026-08-24,36,50
+S138,Mathematics,Mid Term,2026-09-28,79,100
+S138,Physics,Unit Test 1,2026-07-20,40,50
+S138,Physics,Unit Test 2,2026-08-24,40,50
+S138,Physics,Mid Term,2026-09-28,83,100
+S138,Programming,Unit Test 1,2026-07-20,32,50
+S138,Programming,Unit Test 2,2026-08-24,32,50
+S138,Programming,Mid Term,2026-09-28,62,100
+S138,Digital Logic,Unit Test 1,2026-07-20,40,50
+S138,Digital Logic,Unit Test 2,2026-08-24,40,50
+S138,Communication Skills,Unit Test 1,2026-07-20,32,50
+S138,Communication Skills,Unit Test 2,2026-08-24,30,50
+S139,Mathematics,Unit Test 1,2026-07-20,20,50
+S139,Mathematics,Unit Test 2,2026-08-24,27,50
+S139,Mathematics,Mid Term,2026-09-28,57,100
+S139,Physics,Unit Test 1,2026-07-20,18,50
+S139,Physics,Unit Test 2,2026-08-24,22,50
+S139,Physics,Mid Term,2026-09-28,55,100
+S139,Programming,Unit Test 1,2026-07-20,24,50
+S139,Programming,Unit Test 2,2026-08-24,28,50
+S139,Programming,Mid Term,2026-09-28,76,100
+S139,Digital Logic,Unit Test 1,2026-07-20,19,50
+S139,Digital Logic,Unit Test 2,2026-08-24,26,50
+S139,Communication Skills,Unit Test 1,2026-07-20,20,50
+S139,Communication Skills,Unit Test 2,2026-08-24,24,50
+S140,Mathematics,Unit Test 1,2026-07-20,40,50
+S140,Mathematics,Unit Test 2,2026-08-24,40,50
+S140,Mathematics,Mid Term,2026-09-28,81,100
+S140,Physics,Unit Test 1,2026-07-20,38,50
+S140,Physics,Unit Test 2,2026-08-24,38,50
+S140,Physics,Mid Term,2026-09-28,78,100
+S140,Programming,Unit Test 1,2026-07-20,33,50
+S140,Programming,Unit Test 2,2026-08-24,34,50
+S140,Programming,Mid Term,2026-09-28,70,100
+S140,Digital Logic,Unit Test 1,2026-07-20,39,50
+S140,Digital Logic,Unit Test 2,2026-08-24,40,50
+S140,Communication Skills,Unit Test 1,2026-07-20,33,50
+S140,Communication Skills,Unit Test 2,2026-08-24,32,50

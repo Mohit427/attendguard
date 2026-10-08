@@ -1,0 +1,16 @@
+department,subject,teacher_name,teacher_email,adviser_name,adviser_email
+Computer Science,Mathematics,Dr. Anita Rao,anita.rao@example.edu,Dr. Sunil Iyer,sunil.iyer@example.edu
+Computer Science,Physics,Dr. Vikram Shah,vikram.shah@example.edu,Dr. Sunil Iyer,sunil.iyer@example.edu
+Computer Science,Programming,Prof. Neha Kapoor,neha.kapoor@example.edu,Dr. Sunil Iyer,sunil.iyer@example.edu
+Computer Science,Digital Logic,Prof. Arjun Mehta,arjun.mehta@example.edu,Dr. Sunil Iyer,sunil.iyer@example.edu
+Computer Science,Communication Skills,Ms. Priya Nair,priya.nair@example.edu,Dr. Sunil Iyer,sunil.iyer@example.edu
+Electronics,Mathematics,Dr. Anita Rao,anita.rao@example.edu,Dr. Kavya Menon,kavya.menon@example.edu
+Electronics,Physics,Dr. Vikram Shah,vikram.shah@example.edu,Dr. Kavya Menon,kavya.menon@example.edu
+Electronics,Programming,Prof. Neha Kapoor,neha.kapoor@example.edu,Dr. Kavya Menon,kavya.menon@example.edu
+Electronics,Digital Logic,Prof. Arjun Mehta,arjun.mehta@example.edu,Dr. Kavya Menon,kavya.menon@example.edu
+Electronics,Communication Skills,Ms. Priya Nair,priya.nair@example.edu,Dr. Kavya Menon,kavya.menon@example.edu
+Mechanical,Mathematics,Dr. Anita Rao,anita.rao@example.edu,Dr. Rahul Verma,rahul.verma@example.edu
+Mechanical,Physics,Dr. Vikram Shah,vikram.shah@example.edu,Dr. Rahul Verma,rahul.verma@example.edu
+Mechanical,Programming,Prof. Neha Kapoor,neha.kapoor@example.edu,Dr. Rahul Verma,rahul.verma@example.edu
+Mechanical,Digital Logic,Prof. Arjun Mehta,arjun.mehta@example.edu,Dr. Rahul Verma,rahul.verma@example.edu
+Mechanical,Communication Skills,Ms. Priya Nair,priya.nair@example.edu,Dr. Rahul Verma,rahul.verma@example.edu

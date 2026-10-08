@@ -1,0 +1,202 @@
+student_id,name,email,department,subject,classes_held,classes_attended
+S101,Aarav Sharma,aarav.sharma0@example.edu,Computer Science,Mathematics,35,34
+S101,Aarav Sharma,aarav.sharma0@example.edu,Computer Science,Physics,30,29
+S101,Aarav Sharma,aarav.sharma0@example.edu,Computer Science,Programming,33,32
+S101,Aarav Sharma,aarav.sharma0@example.edu,Computer Science,Digital Logic,42,41
+S101,Aarav Sharma,aarav.sharma0@example.edu,Computer Science,Communication Skills,35,33
+S102,Diya Patel,diya.patel1@example.edu,Electronics,Mathematics,41,39
+S102,Diya Patel,diya.patel1@example.edu,Electronics,Physics,42,41
+S102,Diya Patel,diya.patel1@example.edu,Electronics,Programming,42,39
+S102,Diya Patel,diya.patel1@example.edu,Electronics,Digital Logic,40,37
+S102,Diya Patel,diya.patel1@example.edu,Electronics,Communication Skills,37,34
+S103,Rohan Gupta,rohan.gupta2@example.edu,Mechanical,Mathematics,42,40
+S103,Rohan Gupta,rohan.gupta2@example.edu,Mechanical,Physics,40,38
+S103,Rohan Gupta,rohan.gupta2@example.edu,Mechanical,Programming,30,27
+S103,Rohan Gupta,rohan.gupta2@example.edu,Mechanical,Digital Logic,32,31
+S103,Rohan Gupta,rohan.gupta2@example.edu,Mechanical,Communication Skills,35,33
+S104,Ishita Reddy,ishita.reddy3@example.edu,Computer Science,Mathematics,37,26
+S104,Ishita Reddy,ishita.reddy3@example.edu,Computer Science,Physics,33,23
+S104,Ishita Reddy,ishita.reddy3@example.edu,Computer Science,Programming,41,34
+S104,Ishita Reddy,ishita.reddy3@example.edu,Computer Science,Digital Logic,38,31
+S104,Ishita Reddy,ishita.reddy3@example.edu,Computer Science,Communication Skills,40,32
+S105,Kabir Singh,kabir.singh4@example.edu,Electronics,Mathematics,38,33
+S105,Kabir Singh,kabir.singh4@example.edu,Electronics,Physics,31,27
+S105,Kabir Singh,kabir.singh4@example.edu,Electronics,Programming,38,34
+S105,Kabir Singh,kabir.singh4@example.edu,Electronics,Digital Logic,39,34
+S105,Kabir Singh,kabir.singh4@example.edu,Electronics,Communication Skills,36,32
+S106,Meera Iyer,meera.iyer5@example.edu,Mechanical,Mathematics,36,32
+S106,Meera Iyer,meera.iyer5@example.edu,Mechanical,Physics,30,27
+S106,Meera Iyer,meera.iyer5@example.edu,Mechanical,Programming,42,36
+S106,Meera Iyer,meera.iyer5@example.edu,Mechanical,Digital Logic,37,32
+S106,Meera Iyer,meera.iyer5@example.edu,Mechanical,Communication Skills,34,30
+S107,Arjun Khan,arjun.khan6@example.edu,Computer Science,Mathematics,34,24
+S107,Arjun Khan,arjun.khan6@example.edu,Computer Science,Physics,33,24
+S107,Arjun Khan,arjun.khan6@example.edu,Computer Science,Programming,40,30
+S107,Arjun Khan,arjun.khan6@example.edu,Computer Science,Digital Logic,30,22
+S107,Arjun Khan,arjun.khan6@example.edu,Computer Science,Communication Skills,42,34
+S108,Saanvi Joshi,saanvi.joshi7@example.edu,Electronics,Mathematics,42,39
+S108,Saanvi Joshi,saanvi.joshi7@example.edu,Electronics,Physics,33,30
+S108,Saanvi Joshi,saanvi.joshi7@example.edu,Electronics,Programming,42,40
+S108,Saanvi Joshi,saanvi.joshi7@example.edu,Electronics,Digital Logic,42,39
+S108,Saanvi Joshi,saanvi.joshi7@example.edu,Electronics,Communication Skills,34,32
+S109,Vivaan Das,vivaan.das8@example.edu,Mechanical,Mathematics,31,29
+S109,Vivaan Das,vivaan.das8@example.edu,Mechanical,Physics,35,33
+S109,Vivaan Das,vivaan.das8@example.edu,Mechanical,Programming,42,40
+S109,Vivaan Das,vivaan.das8@example.edu,Mechanical,Digital Logic,32,32
+S109,Vivaan Das,vivaan.das8@example.edu,Mechanical,Communication Skills,42,42
+S110,Ananya Nair,ananya.nair9@example.edu,Computer Science,Mathematics,42,35
+S110,Ananya Nair,ananya.nair9@example.edu,Computer Science,Physics,37,29
+S110,Ananya Nair,ananya.nair9@example.edu,Computer Science,Programming,31,24
+S110,Ananya Nair,ananya.nair9@example.edu,Computer Science,Digital Logic,40,29
+S110,Ananya Nair,ananya.nair9@example.edu,Computer Science,Communication Skills,41,31
+S111,Aditya Sharma,aditya.sharma10@example.edu,Electronics,Mathematics,34,30
+S111,Aditya Sharma,aditya.sharma10@example.edu,Electronics,Physics,34,30
+S111,Aditya Sharma,aditya.sharma10@example.edu,Electronics,Programming,40,35
+S111,Aditya Sharma,aditya.sharma10@example.edu,Electronics,Digital Logic,35,31
+S111,Aditya Sharma,aditya.sharma10@example.edu,Electronics,Communication Skills,33,29
+S112,Riya Patel,riya.patel11@example.edu,Mechanical,Mathematics,33,24
+S112,Riya Patel,riya.patel11@example.edu,Mechanical,Physics,34,26
+S112,Riya Patel,riya.patel11@example.edu,Mechanical,Programming,40,28
+S112,Riya Patel,riya.patel11@example.edu,Mechanical,Digital Logic,34,28
+S112,Riya Patel,riya.patel11@example.edu,Mechanical,Communication Skills,34,26
+S113,Karan Gupta,karan.gupta12@example.edu,Computer Science,Mathematics,37,32
+S113,Karan Gupta,karan.gupta12@example.edu,Computer Science,Physics,38,33
+S113,Karan Gupta,karan.gupta12@example.edu,Computer Science,Programming,41,36
+S113,Karan Gupta,karan.gupta12@example.edu,Computer Science,Digital Logic,40,36
+S113,Karan Gupta,karan.gupta12@example.edu,Computer Science,Communication Skills,39,34
+S114,Pooja Reddy,pooja.reddy13@example.edu,Electronics,Mathematics,35,31
+S114,Pooja Reddy,pooja.reddy13@example.edu,Electronics,Physics,38,34
+S114,Pooja Reddy,pooja.reddy13@example.edu,Electronics,Programming,34,30
+S114,Pooja Reddy,pooja.reddy13@example.edu,Electronics,Digital Logic,31,27
+S114,Pooja Reddy,pooja.reddy13@example.edu,Electronics,Communication Skills,37,33
+S115,Nikhil Singh,nikhil.singh14@example.edu,Mechanical,Mathematics,36,34
+S115,Nikhil Singh,nikhil.singh14@example.edu,Mechanical,Physics,38,37
+S115,Nikhil Singh,nikhil.singh14@example.edu,Mechanical,Programming,37,36
+S115,Nikhil Singh,nikhil.singh14@example.edu,Mechanical,Digital Logic,30,29
+S115,Nikhil Singh,nikhil.singh14@example.edu,Mechanical,Communication Skills,36,35
+S116,Sneha Iyer,sneha.iyer15@example.edu,Computer Science,Mathematics,40,33
+S116,Sneha Iyer,sneha.iyer15@example.edu,Computer Science,Physics,42,29
+S116,Sneha Iyer,sneha.iyer15@example.edu,Computer Science,Programming,39,32
+S116,Sneha Iyer,sneha.iyer15@example.edu,Computer Science,Digital Logic,38,27
+S116,Sneha Iyer,sneha.iyer15@example.edu,Computer Science,Communication Skills,36,29
+S117,Rahul Khan,rahul.khan16@example.edu,Electronics,Mathematics,34,23
+S117,Rahul Khan,rahul.khan16@example.edu,Electronics,Physics,40,31
+S117,Rahul Khan,rahul.khan16@example.edu,Electronics,Programming,42,32
+S117,Rahul Khan,rahul.khan16@example.edu,Electronics,Digital Logic,32,25
+S117,Rahul Khan,rahul.khan16@example.edu,Electronics,Communication Skills,31,23
+S118,Tanvi Joshi,tanvi.joshi17@example.edu,Mechanical,Mathematics,38,28
+S118,Tanvi Joshi,tanvi.joshi17@example.edu,Mechanical,Physics,31,22
+S118,Tanvi Joshi,tanvi.joshi17@example.edu,Mechanical,Programming,37,29
+S118,Tanvi Joshi,tanvi.joshi17@example.edu,Mechanical,Digital Logic,34,24
+S118,Tanvi Joshi,tanvi.joshi17@example.edu,Mechanical,Communication Skills,32,26
+S119,Siddharth Das,siddharth.das18@example.edu,Computer Science,Mathematics,30,28
+S119,Siddharth Das,siddharth.das18@example.edu,Computer Science,Physics,34,31
+S119,Siddharth Das,siddharth.das18@example.edu,Computer Science,Programming,39,36
+S119,Siddharth Das,siddharth.das18@example.edu,Computer Science,Digital Logic,31,31
+S119,Siddharth Das,siddharth.das18@example.edu,Computer Science,Communication Skills,38,36
+S120,Aisha Nair,aisha.nair19@example.edu,Electronics,Mathematics,36,31
+S120,Aisha Nair,aisha.nair19@example.edu,Electronics,Physics,37,32
+S120,Aisha Nair,aisha.nair19@example.edu,Electronics,Programming,36,31
+S120,Aisha Nair,aisha.nair19@example.edu,Electronics,Digital Logic,33,29
+S120,Aisha Nair,aisha.nair19@example.edu,Electronics,Communication Skills,38,34
+S121,Varun Sharma,varun.sharma20@example.edu,Mechanical,Mathematics,32,28
+S121,Varun Sharma,varun.sharma20@example.edu,Mechanical,Physics,35,30
+S121,Varun Sharma,varun.sharma20@example.edu,Mechanical,Programming,37,33
+S121,Varun Sharma,varun.sharma20@example.edu,Mechanical,Digital Logic,36,32
+S121,Varun Sharma,varun.sharma20@example.edu,Mechanical,Communication Skills,31,27
+S122,Neha Patel,neha.patel21@example.edu,Computer Science,Mathematics,30,22
+S122,Neha Patel,neha.patel21@example.edu,Computer Science,Physics,42,35
+S122,Neha Patel,neha.patel21@example.edu,Computer Science,Programming,34,27
+S122,Neha Patel,neha.patel21@example.edu,Computer Science,Digital Logic,34,24
+S122,Neha Patel,neha.patel21@example.edu,Computer Science,Communication Skills,40,31
+S123,Yash Gupta,yash.gupta22@example.edu,Electronics,Mathematics,39,27
+S123,Yash Gupta,yash.gupta22@example.edu,Electronics,Physics,31,13
+S123,Yash Gupta,yash.gupta22@example.edu,Electronics,Programming,38,27
+S123,Yash Gupta,yash.gupta22@example.edu,Electronics,Digital Logic,39,27
+S123,Yash Gupta,yash.gupta22@example.edu,Electronics,Communication Skills,35,24
+S124,Kriti Reddy,kriti.reddy23@example.edu,Mechanical,Mathematics,35,25
+S124,Kriti Reddy,kriti.reddy23@example.edu,Mechanical,Physics,36,27
+S124,Kriti Reddy,kriti.reddy23@example.edu,Mechanical,Programming,42,29
+S124,Kriti Reddy,kriti.reddy23@example.edu,Mechanical,Digital Logic,35,27
+S124,Kriti Reddy,kriti.reddy23@example.edu,Mechanical,Communication Skills,34,28
+S125,Manav Singh,manav.singh24@example.edu,Computer Science,Mathematics,38,33
+S125,Manav Singh,manav.singh24@example.edu,Computer Science,Physics,42,36
+S125,Manav Singh,manav.singh24@example.edu,Computer Science,Programming,35,30
+S125,Manav Singh,manav.singh24@example.edu,Computer Science,Digital Logic,32,28
+S125,Manav Singh,manav.singh24@example.edu,Computer Science,Communication Skills,41,36
+S126,Shreya Iyer,shreya.iyer25@example.edu,Electronics,Mathematics,39,34
+S126,Shreya Iyer,shreya.iyer25@example.edu,Electronics,Physics,36,31
+S126,Shreya Iyer,shreya.iyer25@example.edu,Electronics,Programming,35,30
+S126,Shreya Iyer,shreya.iyer25@example.edu,Electronics,Digital Logic,42,37
+S126,Shreya Iyer,shreya.iyer25@example.edu,Electronics,Communication Skills,30,27
+S127,Dev Khan,dev.khan26@example.edu,Mechanical,Mathematics,33,24
+S127,Dev Khan,dev.khan26@example.edu,Mechanical,Physics,37,29
+S127,Dev Khan,dev.khan26@example.edu,Mechanical,Programming,31,23
+S127,Dev Khan,dev.khan26@example.edu,Mechanical,Digital Logic,35,27
+S127,Dev Khan,dev.khan26@example.edu,Mechanical,Communication Skills,41,32
+S128,Nisha Joshi,nisha.joshi27@example.edu,Computer Science,Mathematics,39,27
+S128,Nisha Joshi,nisha.joshi27@example.edu,Computer Science,Physics,33,27
+S128,Nisha Joshi,nisha.joshi27@example.edu,Computer Science,Programming,34,27
+S128,Nisha Joshi,nisha.joshi27@example.edu,Computer Science,Digital Logic,35,27
+S128,Nisha Joshi,nisha.joshi27@example.edu,Computer Science,Communication Skills,33,23
+S129,Harsh Das,harsh.das28@example.edu,Electronics,Mathematics,32,31
+S129,Harsh Das,harsh.das28@example.edu,Electronics,Physics,31,29
+S129,Harsh Das,harsh.das28@example.edu,Electronics,Programming,34,31
+S129,Harsh Das,harsh.das28@example.edu,Electronics,Digital Logic,34,33
+S129,Harsh Das,harsh.das28@example.edu,Electronics,Communication Skills,41,41
+S130,Lavanya Nair,lavanya.nair29@example.edu,Mechanical,Mathematics,30,29
+S130,Lavanya Nair,lavanya.nair29@example.edu,Mechanical,Physics,37,35
+S130,Lavanya Nair,lavanya.nair29@example.edu,Mechanical,Programming,37,34
+S130,Lavanya Nair,lavanya.nair29@example.edu,Mechanical,Digital Logic,41,38
+S130,Lavanya Nair,lavanya.nair29@example.edu,Mechanical,Communication Skills,38,36
+S131,Om Sharma,om.sharma30@example.edu,Computer Science,Mathematics,37,27
+S131,Om Sharma,om.sharma30@example.edu,Computer Science,Physics,33,24
+S131,Om Sharma,om.sharma30@example.edu,Computer Science,Programming,35,28
+S131,Om Sharma,om.sharma30@example.edu,Computer Science,Digital Logic,35,28
+S131,Om Sharma,om.sharma30@example.edu,Computer Science,Communication Skills,32,24
+S132,Zoya Patel,zoya.patel31@example.edu,Electronics,Mathematics,31,26
+S132,Zoya Patel,zoya.patel31@example.edu,Electronics,Physics,40,29
+S132,Zoya Patel,zoya.patel31@example.edu,Electronics,Programming,39,32
+S132,Zoya Patel,zoya.patel31@example.edu,Electronics,Digital Logic,40,32
+S132,Zoya Patel,zoya.patel31@example.edu,Electronics,Communication Skills,42,30
+S133,Rehan Gupta,rehan.gupta32@example.edu,Mechanical,Mathematics,38,36
+S133,Rehan Gupta,rehan.gupta32@example.edu,Mechanical,Physics,38,36
+S133,Rehan Gupta,rehan.gupta32@example.edu,Mechanical,Programming,30,28
+S133,Rehan Gupta,rehan.gupta32@example.edu,Mechanical,Digital Logic,33,32
+S133,Rehan Gupta,rehan.gupta32@example.edu,Mechanical,Communication Skills,41,40
+S134,Simran Reddy,simran.reddy33@example.edu,Computer Science,Mathematics,34,34
+S134,Simran Reddy,simran.reddy33@example.edu,Computer Science,Physics,42,39
+S134,Simran Reddy,simran.reddy33@example.edu,Computer Science,Programming,40,40
+S134,Simran Reddy,simran.reddy33@example.edu,Computer Science,Digital Logic,36,34
+S134,Simran Reddy,simran.reddy33@example.edu,Computer Science,Communication Skills,41,38
+S135,Kunal Singh,kunal.singh34@example.edu,Electronics,Mathematics,34,32
+S135,Kunal Singh,kunal.singh34@example.edu,Electronics,Physics,40,39
+S135,Kunal Singh,kunal.singh34@example.edu,Electronics,Programming,32,30
+S135,Kunal Singh,kunal.singh34@example.edu,Electronics,Digital Logic,36,34
+S135,Kunal Singh,kunal.singh34@example.edu,Electronics,Communication Skills,30,29
+S136,Divya Iyer,divya.iyer35@example.edu,Mechanical,Mathematics,36,33
+S136,Divya Iyer,divya.iyer35@example.edu,Mechanical,Physics,35,32
+S136,Divya Iyer,divya.iyer35@example.edu,Mechanical,Programming,33,31
+S136,Divya Iyer,divya.iyer35@example.edu,Mechanical,Digital Logic,31,30
+S136,Divya Iyer,divya.iyer35@example.edu,Mechanical,Communication Skills,33,32
+S137,Pranav Khan,pranav.khan36@example.edu,Computer Science,Mathematics,40,38
+S137,Pranav Khan,pranav.khan36@example.edu,Computer Science,Physics,36,35
+S137,Pranav Khan,pranav.khan36@example.edu,Computer Science,Programming,41,38
+S137,Pranav Khan,pranav.khan36@example.edu,Computer Science,Digital Logic,31,31
+S137,Pranav Khan,pranav.khan36@example.edu,Computer Science,Communication Skills,42,41
+S138,Megha Joshi,megha.joshi37@example.edu,Electronics,Mathematics,42,37
+S138,Megha Joshi,megha.joshi37@example.edu,Electronics,Physics,35,31
+S138,Megha Joshi,megha.joshi37@example.edu,Electronics,Programming,33,29
+S138,Megha Joshi,megha.joshi37@example.edu,Electronics,Digital Logic,40,35
+S138,Megha Joshi,megha.joshi37@example.edu,Electronics,Communication Skills,38,33
+S139,Aryan Das,aryan.das38@example.edu,Mechanical,Mathematics,33,30
+S139,Aryan Das,aryan.das38@example.edu,Mechanical,Physics,38,36
+S139,Aryan Das,aryan.das38@example.edu,Mechanical,Programming,39,37
+S139,Aryan Das,aryan.das38@example.edu,Mechanical,Digital Logic,31,30
+S139,Aryan Das,aryan.das38@example.edu,Mechanical,Communication Skills,30,29
+S140,Tara Nair,tara.nair39@example.edu,Computer Science,Mathematics,41,41
+S140,Tara Nair,tara.nair39@example.edu,Computer Science,Physics,32,31
+S140,Tara Nair,tara.nair39@example.edu,Computer Science,Programming,42,42
+S140,Tara Nair,tara.nair39@example.edu,Computer Science,Digital Logic,34,33
+S140,Tara Nair,tara.nair39@example.edu,Computer Science,Communication Skills,39,38
+S101,Aarav Sharma,aarav.sharma0@example.edu,Computer Science,Digital Logic,42,41
