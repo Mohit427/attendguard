@@ -188,7 +188,7 @@ with st.sidebar:
                        help="SAFE ≥ target + 5 · WARNING within 5 points above target · CRITICAL below target.")
     st.divider()
     st.markdown("**Email settings**")
-    test_mode = st.toggle("Test mode", value=True,
+    test_mode = st.toggle("Test mode", value=True, key="test_mode",
                           help="Redirects ALL outgoing emails to the test address below. "
                                "The real recipient is noted in the subject line.")
     test_address = st.text_input("Test address", value=ss.get("test_address", get_secret("SMTP_USER")),
@@ -270,7 +270,7 @@ with tab_dash:
         sel_d = f1.multiselect("Department", depts, placeholder="All departments")
         sel_s = f2.multiselect("Subject", subs, placeholder="All subjects",
                                help="Attendance and status are recomputed over the selected subjects only.")
-        show_safe = f3.toggle("Include SAFE", value=False, help="Show safe students in the ranked table too.")
+        show_safe = f3.toggle("Include SAFE", value=False, key="show_safe", help="Show safe students in the ranked table too.")
 
         if sel_d or sel_s:
             a = att_df
@@ -422,10 +422,131 @@ with tab_student:
         st.error(f"Couldn't show this student: {exc}")
 
 
+# ---------------------------------------------------------------- email helpers
+
+def mode_banner():
+    if test_mode:
+        addr = test_address.strip() or "(no test address set - add one in the sidebar)"
+        st.markdown(f'<div class="ag-banner test">🧪 <b>Test mode is ON</b> - every email is redirected to '
+                    f'<b>{addr}</b>. The real recipient is noted in the subject line.</div>',
+                    unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="ag-banner live">📨 <b>Live mode</b> - emails go to the real students and '
+                    'staff addresses in your files.</div>', unsafe_allow_html=True)
+
+
+def send_blocker() -> str | None:
+    if not (smtp_user and smtp_pass):
+        return "Email isn't configured yet - add SMTP_USER and SMTP_PASS to the app secrets."
+    if test_mode and not E.valid_email(test_address):
+        return "Test mode is on - enter a valid test address in the sidebar first."
+    return None
+
+
+def run_batch(emails, label: str):
+    """Send a batch with a progress bar; store per-message results in session state."""
+    if not emails:
+        st.info("Nothing to send.")
+        return
+    emails = E.apply_test_mode(emails, test_mode, test_address)
+    bar = st.progress(0.0, text=f"Sending {label}...")
+
+    def prog(i, total, _e):
+        bar.progress(i / total, text=f"Sending {label}: {i} of {total}")
+
+    try:
+        results = E.send_batch(emails, smtp_user, smtp_pass, progress=prog)
+    except Exception as exc:  # send_batch is already per-message safe; this is a last resort
+        st.error(f"Sending stopped unexpectedly: {exc}")
+        return
+    finally:
+        bar.empty()
+    ss.send_results = {"label": label, "rows": results, "test_mode": test_mode}
+    sent = sum(r["status"] == "sent" for r in results)
+    st.toast(f"{label}: {sent} sent, {len(results) - sent} failed", icon="✉️")
+
+
+def show_results():
+    res = ss.send_results
+    if not res:
+        st.caption("Results of your last send will appear here.")
+        return
+    df = pd.DataFrame(res["rows"])
+    sent = int((df["status"] == "sent").sum())
+    failed = len(df) - sent
+    msg = f"**{res['label']}** - {sent} sent, {failed} failed" + (" (test mode)" if res["test_mode"] else "")
+    (st.success if failed == 0 else st.warning)(msg)
+    out = pd.DataFrame({"Recipient": df["recipient"], "Original address": df["original_address"],
+                        "Delivered to": df["sent_to"], "Type": df["kind"],
+                        "Result": df["status"].str.upper(), "Reason": df["reason"]})
+
+    def color(v):
+        return "color:#15803d;font-weight:700" if v == "SENT" else "color:#b91c1c;font-weight:700"
+    st.dataframe(out.style.map(color, subset=["Result"]), hide_index=True, width="stretch")
+
+
+def preview(email: E.Email):
+    shown = E.apply_test_mode([email], test_mode, test_address)[0]
+    with st.container(border=True):
+        st.markdown(f"**To:** {shown.to or '_(missing address)_'}"
+                    + (f" &nbsp;·&nbsp; _originally {shown.original_to}_" if test_mode else ""))
+        st.markdown(f"**Subject:** {shown.subject}")
+        st.html(email.html)
+    with st.expander("Plain-text version"):
+        st.code(email.text, language=None)
+
+
+def student_email(sid) -> E.Email:
+    srow = students[students["student_id"] == sid].iloc[0].to_dict()
+    rows = subjects[subjects["student_id"] == sid].sort_values("attendance_pct").to_dict("records")
+    return E.student_warning(srow, rows, target)
+
+
 # ---------------------------------------------------------------- alerts
 
 with tab_alerts:
-    st.info("Email alerts are coming next.")
+    try:
+        mode_banner()
+        blocker = send_blocker()
+        if blocker:
+            st.warning(blocker, icon="⚙️")
+
+        st.markdown("#### 1 · Student warnings")
+        at_risk = students[students["at_risk"]]
+        if at_risk.empty:
+            st.success("No at-risk students right now - nothing to send. 🎉")
+        else:
+            names = dict(zip(at_risk["student_id"], at_risk["name"] + "  ·  " + at_risk["status"]))
+            c1, c2 = st.columns([3, 2], gap="large")
+            with c1:
+                pick = st.selectbox("Preview email for", list(names), format_func=lambda x: names[x],
+                                    key="preview_student")
+                preview(student_email(pick))
+            with c2:
+                st.markdown(f"**{len(at_risk)} at-risk students** (CRITICAL, WARNING or weak marks)")
+                chosen = st.multiselect("Select students", list(names), format_func=lambda x: names[x],
+                                        key="send_selected", placeholder="Pick one or more students")
+                b1 = st.button(f"Send to all at-risk ({len(at_risk)})", type="primary", width="stretch",
+                               disabled=bool(blocker), key="send_all")
+                b2 = st.button(f"Send to selected ({len(chosen)})", width="stretch",
+                               disabled=bool(blocker) or not chosen, key="send_sel")
+                st.caption("Each email includes subject-wise attendance, classes needed, a weak-marks "
+                           "note and how to book a meeting.")
+                if b1 or b2:
+                    ids = list(at_risk["student_id"]) if b1 else chosen
+                    emails = []
+                    for sid in ids:
+                        try:
+                            emails.append(student_email(sid))
+                        except Exception as exc:
+                            st.error(f"Couldn't compose the email for {sid}: {exc}")
+                    run_batch(emails, "Student warnings")
+
+        st.divider()
+        st.markdown("#### Send results")
+        show_results()
+    except Exception as exc:
+        st.error(f"Something went wrong in the alerts tab: {exc}")
 
 
 # ---------------------------------------------------------------- appointments
