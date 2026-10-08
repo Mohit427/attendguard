@@ -22,7 +22,7 @@ class DataError(Exception):
 
 SCHEMAS = {
     "attendance": ["student_id", "name", "email", "department", "subject",
-                   "classes_held", "classes_attended"],
+                   "classes_held", "classes_attended", "phone"],
     "marks": ["student_id", "subject", "test_name", "test_date", "marks", "max_marks"],
     "staff": ["department", "subject", "teacher_name", "teacher_email",
               "adviser_name", "adviser_email"],
@@ -36,7 +36,7 @@ NUMERIC = {
 
 # Columns that may be blank without dropping the row.
 OPTIONAL_VALUES = {
-    "attendance": {"email", "department"},
+    "attendance": {"email", "department", "phone"},
     "marks": {"test_date", "test_name"},
     "staff": {"teacher_email", "adviser_email", "adviser_name", "teacher_name"},
     "timetable": set(),
@@ -48,6 +48,8 @@ ALIASES = {
                    "student_number", "studentid", "reg_no", "registration_no", "usn", "enrollment_no"],
     "name": ["student_name", "full_name", "student"],
     "email": ["email_id", "e_mail", "mail", "student_email", "email_address"],
+    "phone": ["phone_no", "phone_number", "mobile", "mobile_no", "mobile_number", "contact",
+              "contact_no", "contact_number", "student_phone", "student_mobile", "cell"],
     "department": ["dept", "branch", "department_name"],
     "subject": ["course", "subject_name", "course_name", "paper"],
     "classes_held": ["held", "total_classes", "classes_conducted", "conducted", "total",
@@ -136,7 +138,7 @@ def clean(df: pd.DataFrame, kind: str) -> tuple[pd.DataFrame, list[str]]:
     df = _rename_columns(df, kind)
     missing = [c for c in SCHEMAS[kind] if c not in df.columns]
     # Attendance can live without email/department; fill them in rather than reject.
-    soft = {"attendance": {"email", "department"}}.get(kind, set())
+    soft = {"attendance": {"email", "department", "phone"}}.get(kind, set())
     hard_missing = [c for c in missing if c not in soft]
     if hard_missing:
         found = ", ".join(str(c) for c in df.columns[:12])
@@ -146,7 +148,8 @@ def clean(df: pd.DataFrame, kind: str) -> tuple[pd.DataFrame, list[str]]:
         )
     for c in missing:
         df[c] = ""
-        notes.append(f"No '{c}' column - left blank.")
+        if c != "phone":  # phone is optional - only needed for voice calls
+            notes.append(f"No '{c}' column - left blank.")
 
     df = df[SCHEMAS[kind]].copy()
     for c in df.columns:
@@ -177,6 +180,7 @@ def clean(df: pd.DataFrame, kind: str) -> tuple[pd.DataFrame, list[str]]:
             notes.append(f"{over} row(s) had attended > held; capped at held.")
         df["classes_attended"] = df[["classes_attended", "classes_held"]].min(axis=1).clip(lower=0)
         df["email"] = df["email"].fillna("")
+        df["phone"] = df["phone"].fillna("").str.replace(r"\.0$", "", regex=True)
         df["department"] = df["department"].fillna("Unassigned")
     if kind == "marks":
         b = len(df)

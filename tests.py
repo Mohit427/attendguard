@@ -53,6 +53,55 @@ def run():
     ok &= check("missing marks doesn't crash", L.risk_score(80, 85, 0, 0, L.NO_MARKS) == 30.0)
     ok &= check("weak marks raise risk", L.risk_score(95, 85, 2, 4, L.FALLING) == 27.5)
 
+    # --- voice calls (no network: fake Twilio)
+    import caller as C
+    ok &= check("phone: 10-digit Indian -> +91", C.normalize_phone("98765 43210") == "+919876543210")
+    ok &= check("phone: keeps +, strips junk, Excel .0", C.normalize_phone("+1 (415) 555-0100") == "+14155550100"
+                and C.normalize_phone("9876543210.0") == "+919876543210" and C.normalize_phone("0 98765 43210") == "+919876543210")
+    ok &= check("phone: blank/garbage -> ''", C.normalize_phone("") == "" and C.normalize_phone("abc") == ""
+                and C.normalize_phone(None) == "" and C.normalize_phone("12") == "")
+    script = C.call_script({"name": "Ann Lee", "attendance_pct": 70.0},
+                           [{"subject": "Physics", "classes_needed": 12, "weak": True},
+                            {"subject": "Maths", "classes_needed": None, "weak": False},
+                            {"subject": "Art", "classes_needed": 0, "weak": False}], 85)
+    ok &= check("call script: name, %, next step, lost subject, weak marks",
+                all(t in script for t in ("Hello Ann", "70 percent", "85 percent", "next 12 classes", "Physics",
+                                          "Maths, you can no longer", "marks in Physics")) and "Art" not in script)
+    ok &= check("twiml escapes XML", "&amp;" in C.twiml("A & B") and "<Say" in C.twiml("x"))
+
+    class FakeResp:
+        def __init__(self, code, body):
+            self.status_code, self._b, self.text = code, body, str(body)
+
+        def json(self):
+            return self._b
+
+    class FakeHTTP:
+        def __init__(self, plan):
+            self.plan, self.sent = plan, []
+
+        def post(self, url, auth, data, timeout):
+            self.sent.append(data["To"])
+            return self.plan(data["To"])
+
+    calls = [C.Call(to=t, script="hi", recipient_name=n) for t, n in
+             [("+919876543210", "A"), ("+919999999999", "B"), ("bad", "C"), ("+918888888888", "D")]]
+    http = FakeHTTP(lambda to: FakeResp(400, {"code": 21219, "message": "unverified"}) if to == "+919999999999"
+                    else FakeResp(201, {"sid": "CA1", "status": "queued"}))
+    res = C.place_calls(calls, "AC1", "tok", "+15550000000", http=http)
+    ok &= check("calls: one failure never stops the batch",
+                [r["status"] for r in res] == ["sent", "failed", "failed", "sent"]
+                and "verified" in res[1]["reason"] and "Invalid phone" in res[2]["reason"] and len(http.sent) == 3)
+    http401 = FakeHTTP(lambda to: FakeResp(401, {"code": 20003, "message": "auth"}))
+    res = C.place_calls(calls, "AC1", "bad", "+15550000000", http=http401)
+    ok &= check("calls: bad credentials fail fast with a clear reason",
+                all(r["status"] == "failed" for r in res) and len(http401.sent) == 1 and "credentials" in res[-1]["reason"])
+    res = C.place_calls(calls[:1], "", "", "", http=FakeHTTP(lambda to: None))
+    ok &= check("calls: missing secrets -> failed row, no crash", res[0]["status"] == "failed" and "not configured" in res[0]["reason"])
+    red = C.apply_test_mode(calls[:2], True, "+911234567890")
+    ok &= check("calls: test mode redirects every call", all(c.to == "+911234567890" for c in red)
+                and red[0].original_to == "+919876543210")
+
     # --- end-to-end with pandas + sample data
     try:
         import pandas as pd

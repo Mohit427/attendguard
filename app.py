@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 import streamlit as st
 import streamlit.components.v1 as components
 
+import caller as C
 import data_loader as D
 import emailer as E
 import logic as L
@@ -295,8 +296,11 @@ def handle_upload(kind: str, file):
     st.session_state.send_results = None
 
 
+REPORT_VERSION = 2  # bump when build_report's output changes, so stale cached reports are never reused
+
+
 @st.cache_data(show_spinner=False)
-def compute_report(att: pd.DataFrame, marks: pd.DataFrame | None, target: float):
+def compute_report(att: pd.DataFrame, marks: pd.DataFrame | None, target: float, version: int = REPORT_VERSION):
     m = marks if marks is not None else pd.DataFrame(columns=D.SCHEMAS["marks"])
     return L.build_report(att, m, target)
 
@@ -319,7 +323,7 @@ def _theme_stash() -> dict:
     return {}
 
 
-STASH_KEYS = ("data", "notes", "source", "bookings", "send_results", "test_address")
+STASH_KEYS = ("data", "notes", "source", "bookings", "send_results", "test_address", "test_phone")
 
 
 def restore_after_theme_switch():
@@ -426,6 +430,21 @@ with st.sidebar:
         st.caption(f"✉️ Sending as {smtp_user}")
     else:
         st.caption("⚠️ Email not configured - add SMTP_USER and SMTP_PASS to secrets. Previews still work.")
+
+    st.markdown('<div class="ag-side-h">Voice calls</div>', unsafe_allow_html=True)
+    test_phone_raw = st.text_input("Test phone", value=ss.get("test_phone", get_secret("TEST_PHONE")),
+                                   placeholder="+91 98765 43210", key="test_phone_input",
+                                   help="While test mode is on, every call rings this number instead. "
+                                        "On a Twilio trial it must be a verified number.")
+    ss.test_phone = test_phone_raw
+    test_phone = C.normalize_phone(test_phone_raw)
+    tw_sid, tw_token, tw_from = (get_secret("TWILIO_ACCOUNT_SID"), get_secret("TWILIO_AUTH_TOKEN"),
+                                 C.normalize_phone(get_secret("TWILIO_FROM_NUMBER")))
+    if tw_sid and tw_token and tw_from:
+        st.caption(f"📞 Calling from {tw_from}")
+    else:
+        st.caption("⚠️ Calls not configured - add TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN and "
+                   "TWILIO_FROM_NUMBER to secrets. Script previews still work.")
 
 
 # ---------------------------------------------------------------- header
@@ -721,6 +740,45 @@ def run_batch(emails, label: str):
     return results
 
 
+def call_blocker() -> str | None:
+    if not (tw_sid and tw_token and tw_from):
+        return "Voice calls aren't configured yet - add the TWILIO_* secrets (see README)."
+    if test_mode and not C.valid_phone(test_phone):
+        return "Test mode is on - enter a valid test phone in the sidebar first (e.g. +91 98765 43210)."
+    return None
+
+
+def call_for(sid) -> C.Call:
+    srow = students[students["student_id"] == sid].iloc[0].to_dict()
+    rows = subjects[subjects["student_id"] == sid].sort_values("attendance_pct").to_dict("records")
+    return C.Call(to=C.normalize_phone(srow.get("phone", "")),
+                  script=C.call_script(srow, rows, target), recipient_name=str(srow["name"]))
+
+
+def run_calls(calls, label: str):
+    """Place calls with a progress bar; results go to the shared results table."""
+    if not calls:
+        st.info("Nothing to call.")
+        return []
+    calls = C.apply_test_mode(calls, test_mode, test_phone)
+    bar = st.progress(0.0, text=f"Placing {label}...")
+
+    def prog(i, total, _c):
+        bar.progress(i / total, text=f"Placing {label}: {i} of {total}")
+
+    try:
+        results = C.place_calls(calls, tw_sid, tw_token, tw_from, progress=prog)
+    except Exception as exc:  # place_calls is already per-call safe; this is a last resort
+        st.error(f"Calling stopped unexpectedly: {exc}")
+        return []
+    finally:
+        bar.empty()
+    ss.send_results = {"label": label, "rows": results, "test_mode": test_mode}
+    ok = sum(r["status"] == "sent" for r in results)
+    st.toast(f"{label}: {ok} placed, {len(results) - ok} failed", icon="📞")
+    return results
+
+
 def show_results():
     res = ss.send_results
     if not res:
@@ -733,7 +791,7 @@ def show_results():
     (st.success if failed == 0 else st.warning)(msg)
     out = pd.DataFrame({"Recipient": df["recipient"], "Original address": df["original_address"],
                         "Delivered to": df["sent_to"], "Type": df["kind"],
-                        "Result": df["status"].str.upper(), "Reason": df["reason"]})
+                        "Result": df["status"].str.upper(), "Details": df["reason"]})
 
     def color(v):
         return "color:#15803d;font-weight:700" if v == "SENT" else "color:#b91c1c;font-weight:700"
@@ -829,6 +887,48 @@ def email_label(e: E.Email) -> str:
     return f"{e.kind}: {e.recipient_name or e.to}"
 
 
+def voice_section():
+    """Alerts section 4: preview and place Twilio calls to CRITICAL students."""
+    crit = students[students["status"] == L.CRITICAL]
+    if crit.empty:
+        st.success("No CRITICAL students - no calls needed. 🎉")
+    else:
+        cblock = call_blocker()
+        if cblock:
+            st.warning(cblock, icon="📞")
+        phones = crit["phone"] if "phone" in crit.columns else pd.Series("", index=crit.index)
+        has_phone = phones.map(lambda v: bool(C.normalize_phone(v)))
+        cnames = dict(zip(crit["student_id"], crit["name"] + "  ·  " + crit["attendance_pct"].map(lambda v: f"{v:.1f}%")))
+        c1, c2 = st.columns([3, 2], gap="large")
+        with c1:
+            cpick = st.selectbox("Preview call for", list(cnames), format_func=lambda x: cnames[x],
+                                 key="preview_call")
+            pc = C.apply_test_mode([call_for(cpick)], test_mode, test_phone)[0]
+            with st.container(border=True):
+                st.markdown(f"**Calls:** {pc.to or '_(no valid number)_'}"
+                            + (f" &nbsp;·&nbsp; _student's number: {pc.original_to}_" if test_mode else ""))
+                st.markdown(f"🗣️ _“{pc.script}”_")
+        with c2:
+            st.markdown(f"**{len(crit)} CRITICAL students** · {int(has_phone.sum())} with a phone number")
+            cchosen = st.multiselect("Select students to call", list(cnames), format_func=lambda x: cnames[x],
+                                     key="call_selected", placeholder="Pick one or more students")
+            cb1 = st.button(f"📞 Call all CRITICAL ({len(crit)})", type="primary", width="stretch",
+                            disabled=bool(cblock), key="call_all")
+            cb2 = st.button(f"📞 Call selected ({len(cchosen)})", width="stretch",
+                            disabled=bool(cblock) or not cchosen, key="call_sel")
+            st.caption("A short spoken message: attendance, the next step to recover, weak marks, "
+                       "and a pointer to the emailed plan. In test mode every call rings your test phone.")
+            if cb1 or cb2:
+                ids = list(crit["student_id"]) if cb1 else cchosen
+                calls = []
+                for sid_ in ids:
+                    try:
+                        calls.append(call_for(sid_))
+                    except Exception as exc:
+                        st.error(f"Couldn't prepare the call for {sid_}: {exc}")
+                run_calls(calls, "Voice calls")
+
+
 # ---------------------------------------------------------------- alerts
 
 with tab_alerts:
@@ -916,10 +1016,19 @@ with tab_alerts:
                         run_batch(weekly, "Weekly summary")
 
         st.divider()
+        section("4 · Voice calls", "automated phone call for CRITICAL students (via Twilio)")
+        try:
+            voice_section()
+        except Exception as exc:
+            st.error(f"Voice calls are unavailable right now: {exc}")
+
+        st.divider()
         section("Send results", "sent / failed per message")
         show_results()
     except Exception as exc:
         st.error(f"Something went wrong in the alerts tab: {exc}")
+
+
 
 
 # ---------------------------------------------------------------- appointments

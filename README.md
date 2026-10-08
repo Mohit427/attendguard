@@ -10,7 +10,7 @@ AttendGuard takes a college's attendance, marks and staff files and works out wh
 |---|---|
 | **Dashboard** | KPI cards (total, critical, warning, safe, average attendance), risk-by-department and risk-by-subject charts, and a ranked at-risk table with department/subject filters |
 | **Student view** | Per-subject attendance against the target, a plain-English recovery plan ("Attend the next 7 classes in a row in Physics to reach 85%"), subject details and a marks-trend chart |
-| **Alerts** | Preview, then send personalised student warnings (all at-risk or selected). Teacher alerts list the at-risk students in their subjects; adviser alerts list those in their department. Also a department-wise weekly summary. Test mode is **on by default** |
+| **Alerts** | Preview, then send personalised student warnings (all at-risk or selected). Teacher alerts list the at-risk students in their subjects; adviser alerts list those in their department. Also a department-wise weekly summary, and **automated voice calls** (Twilio) to CRITICAL students. Test mode is **on by default** |
 | **Appointments** | Pick an at-risk student and subject, see the teacher's free slots, book one, and send confirmation emails to the student and the teacher |
 
 A **🌙 Dark mode** toggle in the sidebar switches between the custom light and dark themes (defined in `.streamlit/config.toml`). Loaded data is kept across the switch.
@@ -19,7 +19,7 @@ Input files (CSV or XLSX, uploaded in the sidebar). A **Load sample data** butto
 
 | File | Columns |
 |---|---|
-| Attendance | `student_id, name, email, department, subject, classes_held, classes_attended` |
+| Attendance | `student_id, name, email, department, subject, classes_held, classes_attended`, optional `phone` |
 | Marks | `student_id, subject, test_name, test_date, marks, max_marks` |
 | Staff | `department, subject, teacher_name, teacher_email, adviser_name, adviser_email` |
 | Timetable *(optional)* | `teacher_name, day, time_slot, status` (`free` / `busy`) |
@@ -69,6 +69,12 @@ A student is **at risk** if their status is WARNING or CRITICAL, or if they have
 - Each message is sent in its own `try/except`, so one failure never stops the batch. A progress bar runs during sending, and a results table shows sent/failed plus the reason for each message.
 - **Test mode** (on by default) redirects every email to the test address in the sidebar. The subject line becomes `[TEST -> real.recipient@…] …`.
 
+### Voice calls (Twilio)
+- CRITICAL students can get a short automated call (Twilio REST API, `<Say>` text-to-speech). It states their attendance, the single most useful next step (the subject needing the fewest classes), any subject that can't be recovered, weak marks, and points to the emailed plan.
+- Phone numbers come from the optional `phone` column (aliases: `mobile`, `contact`, …). 10-digit numbers are assumed Indian (+91).
+- Calls are placed one by one with per-call error handling, a progress bar and the same results table as emails. **Test mode** redirects every call to the test phone in the sidebar.
+- Sample data uses placeholder numbers (`+91 00000 00xxx`) that are not real, so nobody is ever called by accident.
+
 ## Tools used
 Python 3.12 · Streamlit · pandas · Plotly · openpyxl · smtplib (Gmail SMTP). There is no database: data lives in `st.session_state` and in-memory DataFrames, and the analysis is cached with `st.cache_data`.
 
@@ -91,6 +97,12 @@ To send real email, copy `.streamlit/secrets.toml.example` to `.streamlit/secret
 |---|---|
 | `SMTP_USER` | The Gmail address that sends the emails |
 | `SMTP_PASS` | A Gmail **App Password**: 16 characters, created under Google Account → Security → 2-Step Verification → App passwords. Your normal Gmail password won't work |
+| `TWILIO_ACCOUNT_SID` | *(optional, for voice calls)* From the Twilio Console home page, starts with `AC` |
+| `TWILIO_AUTH_TOKEN` | *(optional)* From the Twilio Console home page |
+| `TWILIO_FROM_NUMBER` | *(optional)* Your Twilio phone number, e.g. `+14155550100` |
+| `TEST_PHONE` | *(optional)* Pre-fills the sidebar test phone, e.g. `+919876543210` |
+
+On a **Twilio trial** you can only call numbers listed under *Verified Caller IDs*, calls start with a short trial notice, and calling India needs *Voice → Settings → Geo permissions → India* enabled.
 
 ## Deployment checklist (Streamlit Community Cloud)
 1. Push this repo to GitHub. `.venv/` and `.streamlit/secrets.toml` are git-ignored.
@@ -100,6 +112,11 @@ To send real email, copy `.streamlit/secrets.toml.example` to `.streamlit/secret
    ```toml
    SMTP_USER = "your.address@gmail.com"
    SMTP_PASS = "your16charapppassword"
+   # optional - voice calls
+   TWILIO_ACCOUNT_SID = "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+   TWILIO_AUTH_TOKEN = "your_auth_token"
+   TWILIO_FROM_NUMBER = "+14155550100"
+   TEST_PHONE = "+919876543210"
    ```
 5. Deploy, open the app, and click **Load sample data**. Check that all four tabs render.
 6. With test mode on, type your own address in the sidebar and send one student warning. Confirm it arrives with `[TEST -> …]` in the subject.
@@ -111,11 +128,12 @@ app.py            Streamlit UI (4 tabs)
 logic.py          attendance %, status, recovery formula, marks flags, risk score
 data_loader.py    CSV/XLSX loading, header aliases, validation, cleaning
 emailer.py        email composition + Gmail SMTP batch sender
+caller.py         voice-call scripts + Twilio batch caller
 tests.py          checks for the formula, flags, edge cases and loader
 sample_data/      attendance, marks, staff, timetable CSVs
 ```
 
 ## Roadmap (future work, not implemented)
-- **Automated voice calls** to students (and parents) who stay CRITICAL after an email alert.
+- **Parent calls and escalation rules**: automatically call parents when a student stays CRITICAL a week after the first alert.
 - **Scheduled weekly summaries** sent automatically by a cron job, instead of the manual "Send weekly summary" button.
 - Persistent storage for bookings and alert history (currently per session).

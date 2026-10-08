@@ -160,9 +160,11 @@ def subject_attendance(att, target_pct):
     import pandas as pd
 
     df = att.copy()
+    if "phone" not in df.columns:
+        df["phone"] = ""
     grouped = (df.groupby(["student_id", "subject"], as_index=False)
                  .agg(name=("name", "first"), email=("email", "first"),
-                      department=("department", "first"),
+                      phone=("phone", "first"), department=("department", "first"),
                       classes_held=("classes_held", "sum"),
                       classes_attended=("classes_attended", "sum")))
     grouped["attendance_pct"] = [attendance_pct(h, a) for h, a in
@@ -233,7 +235,7 @@ def build_report(att, marks, target_pct):
 
     students = (subj.groupby("student_id", as_index=False)
                     .agg(name=("name", "first"), email=("email", "first"),
-                         department=("department", "first"),
+                         phone=("phone", "first"), department=("department", "first"),
                          classes_held=("classes_held", "sum"),
                          classes_attended=("classes_attended", "sum")))
     students["attendance_pct"] = [attendance_pct(h, a) for h, a in
