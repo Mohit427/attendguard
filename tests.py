@@ -31,7 +31,8 @@ def run():
     ok &= check("student total = sum of subjects", L.total_needed([0, 5, 12]) == 17)
     ok &= check("student total unrecoverable if any subject is", L.total_needed([3, 400]) is None
                 and L.format_needed(None, limit=None) == "Can't recover this term"
-                and L.format_needed(150, limit=None) == "150")
+                and L.format_needed(150, limit=None) == "150"
+                and L.format_needed(float("nan"), limit=None) == "Can't recover this term")
 
     # --- status bands
     ok &= check("status SAFE at target+5", L.attendance_status(90, 85) == L.SAFE)

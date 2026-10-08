@@ -61,13 +61,17 @@ def classes_needed(held, attended, target_pct) -> int | None:
     return max(int(x), 0)
 
 
+def _missing(v) -> bool:
+    return v is None or (isinstance(v, float) and math.isnan(v))
+
+
 def is_recoverable(needed) -> bool:
-    return needed is not None and needed <= MAX_RECOVERABLE
+    return not _missing(needed) and needed <= MAX_RECOVERABLE
 
 
 def format_needed(needed, limit=MAX_RECOVERABLE) -> str:
     """Display text. limit=None skips the cap (used for per-student totals)."""
-    if needed is None or (limit is not None and needed > limit):
+    if _missing(needed) or (limit is not None and needed > limit):
         return "Can't recover this term"
     return str(int(needed))
 
@@ -127,7 +131,7 @@ def risk_score(att_pct, target_pct, weak_subjects, marked_subjects, trend) -> fl
 
 def recovery_message(subject, needed, target_pct) -> str:
     target = f"{_num(target_pct):g}%"
-    if needed == 0:
+    if not _missing(needed) and needed == 0:
         return f"{subject}: on track - you are at or above {target}."
     if not is_recoverable(needed):
         return (f"{subject}: can't recover to {target} this term - "
