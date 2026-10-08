@@ -447,7 +447,7 @@ def run_batch(emails, label: str):
     """Send a batch with a progress bar; store per-message results in session state."""
     if not emails:
         st.info("Nothing to send.")
-        return
+        return []
     emails = E.apply_test_mode(emails, test_mode, test_address)
     bar = st.progress(0.0, text=f"Sending {label}...")
 
@@ -458,12 +458,13 @@ def run_batch(emails, label: str):
         results = E.send_batch(emails, smtp_user, smtp_pass, progress=prog)
     except Exception as exc:  # send_batch is already per-message safe; this is a last resort
         st.error(f"Sending stopped unexpectedly: {exc}")
-        return
+        return []
     finally:
         bar.empty()
     ss.send_results = {"label": label, "rows": results, "test_mode": test_mode}
     sent = sum(r["status"] == "sent" for r in results)
     st.toast(f"{label}: {sent} sent, {len(results) - sent} failed", icon="✉️")
+    return results
 
 
 def show_results():
@@ -668,5 +669,112 @@ with tab_alerts:
 
 # ---------------------------------------------------------------- appointments
 
+DAY_ORDER = {d: i for i, d in enumerate(
+    ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday",
+     "mon", "tue", "wed", "thu", "fri", "sat", "sun"])}
+FREE_WORDS = {"free", "available", "open", "yes", "f"}
+
+
+def find_teacher(dept, subject):
+    if staff_df is None:
+        return None
+    s = staff_df[staff_df["subject"].map(_key) == _key(subject)]
+    exact = s[s["department"].map(_key) == _key(dept)]
+    s = exact if not exact.empty else s
+    s = s[s["teacher_name"].astype(str).str.strip() != ""]
+    return None if s.empty else s.iloc[0].to_dict()
+
+
 with tab_appt:
-    st.info("Appointments are coming next.")
+    try:
+        mode_banner()
+        if tt_df is None:
+            empty_state("No timetable uploaded",
+                        "Upload a <b>timetable</b> file (teacher_name, day, time_slot, status) in the sidebar "
+                        "to let at-risk students book a support meeting with their teacher. "
+                        "Everything else in AttendGuard works without it.")
+        elif students["at_risk"].sum() == 0:
+            st.success("No at-risk students right now - no appointments needed. 🎉")
+        else:
+            risky = students[students["at_risk"]]
+            names = dict(zip(risky["student_id"], risky["name"] + "  ·  " + risky["status"]))
+            c1, c2 = st.columns([2, 3], gap="large")
+            with c1:
+                st.markdown("#### Book a support meeting")
+                sid = st.selectbox("At-risk student", list(names), format_func=lambda x: names[x],
+                                   key="appt_student")
+                srow = students[students["student_id"] == sid].iloc[0]
+                ssub = subjects[subjects["student_id"] == sid].copy()
+                ssub["_rank"] = ssub["status"].map({L.CRITICAL: 0, L.WARNING: 1, L.SAFE: 2}) - ssub["weak"].astype(int) * 0.5
+                ssub = ssub.sort_values(["_rank", "attendance_pct"])
+                sub_lbl = {r["subject"]: f"{r['subject']}  ·  {r['attendance_pct']:.1f}%  ·  {r['status']}"
+                           + ("  ·  weak marks" if r["weak"] else "") for _, r in ssub.iterrows()}
+                subject = st.selectbox("Subject", list(sub_lbl), format_func=lambda x: sub_lbl[x],
+                                       key="appt_subject", help="Subjects needing the most help are listed first.")
+                teacher = find_teacher(srow["department"], subject)
+                if teacher is None:
+                    st.info("No teacher found for this subject - upload a **staff** file that lists it.")
+                else:
+                    st.markdown(f"**Teacher:** {teacher['teacher_name']}  \n"
+                                f"<span style='color:#64748b'>{teacher['teacher_email'] or 'no email on file'}</span>",
+                                unsafe_allow_html=True)
+            with c2:
+                if teacher is not None:
+                    tname = str(teacher["teacher_name"])
+                    tt = tt_df[(tt_df["teacher_name"].map(_key) == _key(tname))
+                               & (tt_df["status"].map(_key).isin(FREE_WORDS))].copy()
+                    taken = {(_key(b["Teacher"]), _key(b["Day"]), _key(b["Slot"])) for b in ss.bookings}
+                    tt = tt[[(_key(tname), _key(d), _key(t)) not in taken
+                             for d, t in zip(tt["day"], tt["time_slot"])]]
+                    tt["_d"] = tt["day"].map(lambda d: DAY_ORDER.get(_key(d), 99))
+                    tt = tt.sort_values(["_d", "time_slot"])
+                    st.markdown(f"#### Free slots with {tname}")
+                    if tt.empty:
+                        st.info(f"{tname} has no free slots left in the timetable. Try another subject, "
+                                "or contact the teacher directly.")
+                    else:
+                        grid = (tt.assign(v="✅").pivot_table(index="time_slot", columns="day", values="v",
+                                                             aggfunc="first", fill_value=""))
+                        grid = grid[sorted(grid.columns, key=lambda d: DAY_ORDER.get(_key(d), 99))]
+                        st.dataframe(grid, width="stretch")
+                        slots = [(d, t) for d, t in zip(tt["day"], tt["time_slot"])]
+                        slot = st.selectbox("Choose a slot", range(len(slots)),
+                                            format_func=lambda k: f"{slots[k][0]} · {slots[k][1]}", key="appt_slot")
+                        if st.button("📅 Book this slot", type="primary", key="book_slot"):
+                            day, tslot = slots[slot]
+                            booking = {"Student": srow["name"], "Student ID": sid, "Department": srow["department"],
+                                       "Subject": subject, "Teacher": tname, "Day": day, "Slot": tslot,
+                                       "Confirmation": "not sent"}
+                            ss.bookings.append(booking)
+                            mails = [
+                                E.booking_confirmation(srow["name"], srow["email"], srow["name"], tname,
+                                                       subject, day, tslot, for_teacher=False),
+                                E.booking_confirmation(tname, teacher["teacher_email"], srow["name"], tname,
+                                                       subject, day, tslot, for_teacher=True),
+                            ]
+                            msgs = []
+                            blocker = send_blocker()
+                            if blocker:
+                                msgs.append(("success", f"Booked {srow['name']} with {tname} on {day}, {tslot}."))
+                                msgs.append(("info", f"Confirmation emails not sent: {blocker}"))
+                            else:
+                                res = run_batch(mails, "Booking confirmation")
+                                ok_n = sum(r["status"] == "sent" for r in res)
+                                booking["Confirmation"] = f"{ok_n}/2 emails sent"
+                                msgs.append(("success", f"Booked {srow['name']} with {tname} on {day}, {tslot}. "
+                                                        f"Confirmation emails: {ok_n} of 2 sent."))
+                                msgs += [("warning", f"Email to {r['recipient']} failed: {r['reason']}")
+                                         for r in res if r["status"] != "sent"]
+                            ss.appt_msgs = msgs
+                            st.rerun()
+
+            for kind, msg in ss.pop("appt_msgs", []):
+                getattr(st, kind)(msg)
+            st.divider()
+            st.markdown("#### Bookings")
+            if not ss.bookings:
+                st.caption("No bookings yet. Booked meetings will appear here for this session.")
+            else:
+                st.dataframe(pd.DataFrame(ss.bookings), hide_index=True, width="stretch")
+    except Exception as exc:
+        st.error(f"Something went wrong in appointments: {exc}")
