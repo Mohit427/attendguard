@@ -502,6 +502,77 @@ def student_email(sid) -> E.Email:
     return E.student_warning(srow, rows, target)
 
 
+def _key(v) -> str:
+    return str(v).strip().lower()
+
+
+def staff_emails() -> list:
+    """Teacher alerts (their at-risk students per subject) + adviser alerts (per department)."""
+    if staff_df is None or staff_df.empty:
+        return []
+    risk = dict(zip(students["student_id"], students["risk_score"]))
+    flagged = subjects[(subjects["status"] != L.SAFE) | subjects["weak"]].copy()
+    flagged["risk_score"] = flagged["student_id"].map(risk)
+    flagged["_d"], flagged["_s"] = flagged["department"].map(_key), flagged["subject"].map(_key)
+    out = []
+    for (tname, temail), g in staff_df.groupby(["teacher_name", "teacher_email"], sort=True):
+        if not str(tname).strip() and not str(temail).strip():
+            continue
+        pairs = {(_key(d), _key(s)) for d, s in zip(g["department"], g["subject"])}
+        subs_only = {_key(s) for d, s in zip(g["department"], g["subject"]) if not _key(d)}
+        mine = flagged[[(d, s) in pairs or s in subs_only for d, s in zip(flagged["_d"], flagged["_s"])]]
+        if mine.empty:
+            continue
+        mine = mine.sort_values("risk_score", ascending=False)
+        scope = ", ".join(sorted(g["subject"].astype(str).unique()))
+        out.append(E.staff_alert(tname, temail, "Teacher", scope, mine.to_dict("records"), target))
+    risky = students[students["at_risk"]]
+    for (aname, aemail), g in staff_df.groupby(["adviser_name", "adviser_email"], sort=True):
+        if not str(aname).strip() and not str(aemail).strip():
+            continue
+        depts = {_key(d) for d in g["department"]}
+        mine = risky[risky["department"].map(_key).isin(depts)]
+        if mine.empty:
+            continue
+        rows = [dict(r, subject="All subjects", trend=r["marks_trend"],
+                     needed_text=student_needed(r["classes_needed"])) for r in mine.to_dict("records")]
+        scope = ", ".join(sorted(g["department"].astype(str).unique()))
+        out.append(E.staff_alert(aname, aemail, "Adviser", scope, rows, target))
+    return out
+
+
+def weekly_emails() -> list:
+    """One department-wise summary per (adviser, department)."""
+    if staff_df is None or staff_df.empty:
+        return []
+    out = []
+    advisers = staff_df.drop_duplicates(["department", "adviser_name", "adviser_email"])
+    for _, a in advisers.iterrows():
+        dk = _key(a["department"])
+        ds = students[students["department"].map(_key) == dk]
+        if ds.empty:
+            continue
+        dsub = subjects[subjects["department"].map(_key) == dk]
+        stats = {"students": len(ds), "critical": int((ds["status"] == L.CRITICAL).sum()),
+                 "warning": int((ds["status"] == L.WARNING).sum()),
+                 "safe": int((ds["status"] == L.SAFE).sum()),
+                 "avg_attendance": ds["attendance_pct"].mean(),
+                 "weak": int(ds["weak_subjects"].map(bool).sum())}
+        subj_rows = [{"subject": s, "avg_attendance": g["attendance_pct"].mean(),
+                      "critical": int((g["status"] == L.CRITICAL).sum()),
+                      "warning": int((g["status"] == L.WARNING).sum())}
+                     for s, g in dsub.groupby("subject")]
+        top = [dict(r, needed_text=student_needed(r["classes_needed"]))
+               for r in ds[ds["at_risk"]].head(5).to_dict("records")]
+        out.append(E.weekly_summary(a["adviser_name"], a["adviser_email"], a["department"],
+                                    stats, top, subj_rows, target))
+    return out
+
+
+def email_label(e: E.Email) -> str:
+    return f"{e.kind}: {e.recipient_name or e.to}"
+
+
 # ---------------------------------------------------------------- alerts
 
 with tab_alerts:
@@ -541,6 +612,52 @@ with tab_alerts:
                         except Exception as exc:
                             st.error(f"Couldn't compose the email for {sid}: {exc}")
                     run_batch(emails, "Student warnings")
+
+        st.divider()
+        st.markdown("#### 2 · Teacher & adviser alerts")
+        if staff_df is None:
+            st.info("Upload a **staff** file (or load the sample data) to alert subject teachers and "
+                    "faculty advisers.", icon="👩‍🏫")
+        else:
+            staff_mail = staff_emails()
+            if not staff_mail:
+                st.success("No teacher or adviser has at-risk students right now.")
+            else:
+                n_t = sum(e.kind == "Teacher alert" for e in staff_mail)
+                c1, c2 = st.columns([3, 2], gap="large")
+                with c1:
+                    i = st.selectbox("Preview alert for", range(len(staff_mail)),
+                                     format_func=lambda k: email_label(staff_mail[k]), key="preview_staff")
+                    preview(staff_mail[i])
+                with c2:
+                    st.markdown(f"**{n_t} teacher alerts** (at-risk students in their subjects) and "
+                                f"**{len(staff_mail) - n_t} adviser alerts** (at-risk students in their department).")
+                    if st.button(f"Send teacher & adviser alerts ({len(staff_mail)})", type="primary",
+                                 width="stretch", disabled=bool(blocker), key="send_staff"):
+                        run_batch(staff_mail, "Teacher & adviser alerts")
+
+        st.divider()
+        st.markdown("#### 3 · Weekly summary")
+        if staff_df is None:
+            st.info("Upload a **staff** file to send department-wise weekly summaries to advisers.", icon="🗓️")
+        else:
+            weekly = weekly_emails()
+            if not weekly:
+                st.info("No departments matched between the staff and attendance files.")
+            else:
+                c1, c2 = st.columns([3, 2], gap="large")
+                with c1:
+                    j = st.selectbox("Preview summary for", range(len(weekly)),
+                                     format_func=lambda k: f"{weekly[k].subject.split(' - ')[-1]} → "
+                                                           f"{weekly[k].recipient_name or weekly[k].to}",
+                                     key="preview_weekly")
+                    preview(weekly[j])
+                with c2:
+                    st.markdown(f"**{len(weekly)} department summaries**: headline numbers, subject "
+                                f"breakdown and the five highest-risk students.")
+                    if st.button(f"Send weekly summary ({len(weekly)})", type="primary", width="stretch",
+                                 disabled=bool(blocker), key="send_weekly"):
+                        run_batch(weekly, "Weekly summary")
 
         st.divider()
         st.markdown("#### Send results")
